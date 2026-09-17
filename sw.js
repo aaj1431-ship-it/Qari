@@ -1,5 +1,5 @@
 // يحفظ ملفات التطبيق والمكتبات ليعمل دون إنترنت
-const CACHE = "qari-v1";
+const CACHE = "qari-v2";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {

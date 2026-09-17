@@ -397,17 +397,29 @@ $("fix").onclick = () => {
 
 /* ───── القارئ ───── */
 $("open").onclick = () => startReading();
+/* إبقاء الشاشة مضاءة أثناء القراءة */
+let wakeLock=null;
+async function keepAwake(){
+  if(!("wakeLock" in navigator) || wakeLock || $("reader").classList.contains("hidden")) return;
+  try{ wakeLock=await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release",()=>{ wakeLock=null; }); }
+  catch(e){}
+}
+function letSleep(){ if(wakeLock){ wakeLock.release(); wakeLock=null; } }
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) keepAwake(); });
+
 function startReading(){
+  keepAwake();
   $("lib").classList.add("hidden"); $("reader").classList.remove("hidden");
   $("rTitle").textContent = S.title;
   $("card").classList.add("hidden");
   setMode(S.mode, true);
+  keepAwake();
   if(S.pos>0 && S.mode!=="rsvp"){
     const s=S.spans.find(x=>+x.dataset.i===S.pos) || S.spans.find(x=>+x.dataset.i>S.pos);
     if(s){ s.classList.add("mark"); S.hl=[s]; }
   }
 }
-$("back").onclick = () => { pause(); saveProgress(true); renderShelf(); $("reader").classList.add("hidden"); $("lib").classList.remove("hidden"); };
+$("back").onclick = () => { letSleep(); pause(); saveProgress(true); renderShelf(); $("reader").classList.add("hidden"); $("lib").classList.remove("hidden"); };
 
 function renderPage(start){
   const T=S.tokens, box=$("page"), tx=$("text");
