@@ -212,7 +212,9 @@ html.noguides #guides,html.noguides #sguides{display:none}
       <button data-g="1" class="on">ظاهرة</button><button data-g="0">مخفية</button></div></div>
     <div class="set"><span>المظهر</span><div class="row" id="themeRow">
       <button data-t="" class="on">فاتح</button><button data-t="sepia">ورقي</button><button data-t="dark">داكن</button></div></div>
-    <div class="set"><span>انتقل إلى</span><input type="number" id="goPct" min="0" max="100" step="0.1">٪<button id="goBtn">انتقال</button></div>
+    <div class="set" id="wplRow"><span>كلمات السطر الكامل</span><button id="wplMinus">−</button><b id="wplV">10</b><button id="wplPlus">+</button></div>
+    <p class="hint" id="wplHint">عُدّ كلمات سطر كامل من الكتاب واكتب العدد هنا، فعليه يُبنى وقت تظليل كل سطر.</p>
+    <div class="set"><span id="goLbl">انتقل إلى</span><input type="number" id="goPct" min="0" max="100" step="0.1"><span id="goUnit">٪</span><button id="goBtn">انتقال</button></div>
     <p class="hint">المفاتيح: المسافة للتشغيل، الأسهم يمين ويسار للصفحات، أعلى وأسفل للسرعة. اضغط على أي كلمة لتبدأ منها.</p>
     <button class="big" id="closePanel">تم</button>
   </div>
@@ -574,7 +576,7 @@ function letSleep(){ if(OCR.busy) return; if(wakeLock){ wakeLock.release(); wake
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden) keepAwake(OCR.busy); });
 
 /* ───── عرض صفحات PDF كما هي مع الأعمدة الثلاثة والتظليل ───── */
-const SC = {doc:null, page:1, pages:0, units:[], a:null, unit:0, cache:new Map(), resumeUnit:0, words:[]};
+const SC = {wpl:10, doc:null, page:1, pages:0, units:[], a:null, unit:0, cache:new Map(), resumeUnit:0, words:[]};
 
 async function analyzePage(num){
   if(SC.cache.has(num)) return SC.cache.get(num);
@@ -588,84 +590,120 @@ async function analyzePage(num){
     ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
     await pg.render({canvasContext:ctx, viewport:vp}).promise;
     const px=ctx.getImageData(0,0,W,H).data;
-    // عتبة الحبر حسب إضاءة الصفحة
-    let sum=0,c=0; for(let i=0;i<px.length;i+=64){ sum+=px[i]*.3+px[i+1]*.59+px[i+2]*.11; c++; }
-    const thr=Math.min(170, (sum/c)*0.72);
-    const dark=new Uint8Array(W*H), rows=new Uint32Array(H), cols=new Uint32Array(W);
-    for(let y=0,i=0,k=0;y<H;y++) for(let x=0;x<W;x++,i+=4,k++)
-      if(px[i]*.3+px[i+1]*.59+px[i+2]*.11<thr){ dark[k]=1; rows[y]++; cols[x]++; }
+    // عتبة الحبر بطريقة Otsu لتناسب الصفحات الباهتة والمصفرّة
+    const lum=new Uint8Array(W*H), hist=new Float64Array(256);
+    for(let i=0,k=0;k<W*H;i+=4,k++){ const l=(px[i]*77+px[i+1]*151+px[i+2]*28)>>8; lum[k]=l; hist[l]++; }
+    let tot=W*H, sumAll=0; for(let t=0;t<256;t++) sumAll+=t*hist[t];
+    let wB=0,sB=0,best=0,thr=128;
+    for(let t=0;t<256;t++){ wB+=hist[t]; if(!wB) continue; const wF=tot-wB; if(!wF) break;
+      sB+=t*hist[t]; const mB=sB/wB, mF=(sumAll-sB)/wF, v=wB*wF*(mB-mF)*(mB-mF); if(v>best){best=v;thr=t;} }
+    thr=Math.min(thr,190);
+    const dark=new Uint8Array(W*H), cols=new Uint32Array(W);
+    for(let k=0;k<W*H;k++) if(lum[k]<thr){ dark[k]=1; cols[k%W]++; }
     // حدود النص مع تجاهل الحواف والأشرطة السوداء
-    const mx=Math.floor(W*.02), my=Math.floor(H*.02);
-    const colOk=x=>cols[x]>Math.max(2,H*.002) && cols[x]<H*.6;
+    const mx=Math.floor(W*.025), my=Math.floor(H*.02);
+    const colOk=x=>cols[x]>H*.004 && cols[x]<H*.55;
     let x0=W,x1=0; for(let x=mx;x<W-mx;x++) if(colOk(x)){ if(x<x0)x0=x; x1=x; }
-    if(x1<=x0) return finish(full,null);
-    const rows2=new Uint32Array(H);
-    for(let y=my;y<H-my;y++){ let s=0; const b=y*W; for(let x=x0;x<=x1;x++) s+=dark[b+x]; rows2[y]=s; }
-    const rowOk=y=>rows2[y]>Math.max(2,(x1-x0)*.004) && rows2[y]<(x1-x0)*.7;
+    if(x1-x0<W*.2) return finish(full,null);
+    const CW=x1-x0+1, prof=new Float64Array(H);
+    for(let y=my;y<H-my;y++){ let s=0; const b=y*W; for(let x=x0;x<=x1;x++) s+=dark[b+x]; prof[y]= s<CW*.6 ? s : 0; }
+    // تباعد الأسطر: ارتباط ذاتي على ملف أفقي منزوع الاتجاه داخل كتلة النص فقط
+    let ty0=my, ty1=H-my-1;
+    while(ty0<ty1 && prof[ty0]<CW*.01) ty0++;
+    while(ty1>ty0 && prof[ty1]<CW*.01) ty1--;
+    const TH=ty1-ty0+1;
+    const sm=new Float64Array(TH);
+    const r1=Math.max(1,Math.round(H*.002));
+    for(let i=0;i<TH;i++){ let s=0,c=0; for(let j=-r1;j<=r1;j++){ const y=ty0+i+j; if(y>=ty0&&y<=ty1){ s+=prof[y]; c++; } } sm[i]=s/c; }
+    const wma=Math.max(8,Math.round(H*.07)), det=new Float64Array(TH);
+    { let acc=0; const pre=new Float64Array(TH+1); for(let i=0;i<TH;i++){ acc+=sm[i]; pre[i+1]=acc; }
+      for(let i=0;i<TH;i++){ const a=Math.max(0,i-wma), b=Math.min(TH,i+wma+1); det[i]=sm[i]-(pre[b]-pre[a])/(b-a); } }
+    let pitch=0;
+    const minL=Math.max(6,Math.round(H*.012)), maxL=Math.min(Math.round(H*.12), Math.floor(TH/2));
+    const cor=new Float64Array(maxL+2);
+    for(let L=minL-1;L<=maxL+1;L++){ let c=0,n=0; for(let i=0;i+L<TH;i++){ c+=det[i]*det[i+L]; n++; } cor[L]=n?c/n:0; }
+    const peaks=[];
+    for(let L=minL;L<=maxL;L++) if(cor[L]>0 && cor[L]>cor[L-1] && cor[L]>=cor[L+1]) peaks.push(L);
+    if(peaks.length){
+      const top=Math.max(...peaks.map(L=>cor[L]));
+      pitch = peaks.find(L=>cor[L]>=top*.6);
+    }
+    // أشرطة الحبر
+    const rowOk=y=>prof[y]>Math.max(3,CW*.006);
     let bands=[], st=-1;
     for(let y=my;y<=H-my;y++){
       const ok=y<H-my && rowOk(y);
       if(ok && st<0) st=y;
-      if(!ok && st>=0){ if(y-st>=3) bands.push({y0:st,y1:y-1}); st=-1; }
+      if(!ok && st>=0){ if(y-st>=2) bands.push({y0:st,y1:y-1}); st=-1; }
     }
     if(!bands.length) return finish(full,null);
-    const hs=bands.map(b=>b.y1-b.y0+1).sort((a,b)=>a-b);
-    const hm=hs[Math.floor(hs.length*.6)];
-    // دمج نقاط الحروف والتشكيل مع أسطرها
+    if(!pitch){ const hs=bands.map(b=>b.y1-b.y0+1).filter(h=>h<H*.08).sort((a,b)=>a-b); pitch=hs.length ? hs[Math.floor(hs.length*.6)]*1.6 : H*.04; }
+    // دمج النقاط والتشكيل مع أسطرها
     const merged=[];
     for(const b of bands){
       const p=merged[merged.length-1];
-      if(p){ const gap=b.y0-p.y1, small=(b.y1-b.y0)<hm*.45||(p.y1-p.y0)<hm*.45;
-        if(gap<hm*.25 || (small && gap<hm*.7)){ p.y1=b.y1; continue; } }
+      if(p && b.y1-p.y0 < pitch*.9){ p.y1=b.y1; continue; }
       merged.push({...b});
     }
-    const lines=merged.filter(b=>{ const h=b.y1-b.y0; return h>=hm*.4 && h<=hm*3.2; });
-    const gapT=Math.max(3,hm*.3), third=(x1-x0+1)/3;
-    const zones=[], lineUnits=[];
+    // تقسيم الأشرطة الطويلة (أسطر ملتصقة بسبب الميلان)
+    const lines=[];
+    for(const b of merged){
+      const h=b.y1-b.y0+1;
+      let ink=0; for(let y=b.y0;y<=b.y1;y++) ink+=prof[y];
+      if(ink < CW*h*.015 && h<pitch*.5) continue;            // شوائب
+      const n=Math.max(1, Math.round(h/pitch));
+      if(n>1 && h>pitch*1.45){
+        // نقسم عند أضعف الصفوف قرب مواضع القسمة المتوقعة
+        let prev=b.y0;
+        for(let k=1;k<n;k++){
+          const c=Math.round(b.y0+h*k/n), r=Math.round(pitch*.35);
+          let cut=c, mn=1e9; for(let y=c-r;y<=c+r;y++) if(prof[y]<mn){ mn=prof[y]; cut=y; }
+          lines.push({y0:prev,y1:cut}); prev=cut+1;
+        }
+        lines.push({y0:prev,y1:b.y1});
+      } else if(h>=pitch*.25) lines.push(b);
+    }
+    const third=CW/3, zones=[], lineUnits=[];
     lines.forEach((b,li)=>{
-      const ink=new Uint8Array(x1-x0+1);
-      for(let y=b.y0;y<=b.y1;y++){ const base=y*W; for(let x=x0;x<=x1;x++) if(dark[base+x]) ink[x-x0]=1; }
-      const segs=[]; let s=-1, blank=0;
-      for(let i=0;i<=ink.length;i++){
-        if(i<ink.length && ink[i]){ if(s<0) s=i; else if(blank>=gapT){ segs.push([s,i-blank-1]); s=i; } blank=0; }
-        else if(s>=0){ blank++; if(i===ink.length) segs.push([s,i-blank]); }
+      const ink=new Uint32Array(CW);
+      for(let y=b.y0;y<=b.y1;y++){ const base=y*W+x0; for(let i=0;i<CW;i++) ink[i]+=dark[base+i]; }
+      const need=Math.max(1,Math.min(b.y1-b.y0,pitch)*.06);
+      let a=-1,e=-1; for(let i=0;i<CW;i++) if(ink[i]>=need){ if(a<0)a=i; e=i; }
+      if(a<0 || e-a<CW*.03) return;
+      lineUnits.push({x0:a+x0, x1:e+x0, y0:b.y0, y1:b.y1, frac:(e-a)/CW, line:li});
+      for(let k=0;k<3;k++){                                   // k=0 الثلث الأيمن
+        const zs=Math.max(a, Math.round(CW-third*(k+1))), ze=Math.min(e, Math.round(CW-third*k)-1);
+        if(ze-zs<third*.12) continue;
+        zones.push({x0:zs+x0, x1:ze+x0, y0:b.y0, y1:b.y1, frac:(ze-zs)/CW, line:li});
       }
-      if(!segs.length) return;
-      const z=[null,null,null];
-      segs.forEach(([a,e])=>{
-        const cx=(a+e)/2, k=Math.max(0,Math.min(2,Math.floor((x1-x0-cx)/third)));
-        z[k]=z[k]||{x0:1e9,x1:-1,words:0,line:li};
-        z[k].x0=Math.min(z[k].x0,a+x0); z[k].x1=Math.max(z[k].x1,e+x0); z[k].words++;
-      });
-      z.forEach(u=>{ if(u){ u.y0=b.y0; u.y1=b.y1; zones.push(u); } });
-      lineUnits.push({x0:segs[0][0]+x0, x1:segs[segs.length-1][1]+x0, y0:b.y0, y1:b.y1, words:segs.length, line:li});
     });
     return finish(full,{x0,x1,y0:lines.length?lines[0].y0:0,y1:lines.length?lines[lines.length-1].y1:H,zones,lineUnits});
   })();
   SC.cache.set(num, job);
-  // لا نحتفظ إلا بالصفحات القريبة
   for(const k of [...SC.cache.keys()]) if(Math.abs(k-num)>2) SC.cache.delete(k);
   return job;
 
   function finish(full, r){
     const W=full.width, H=full.height;
-    if(!r) return {canvas:full, cw:W, ch:H, gx0:0, gx1:W, zones:[], lineUnits:[], words:0};
+    if(!r) return {canvas:full, cw:W, ch:H, gx0:0, gx1:W, zones:[], lineUnits:[], lines:0};
     const pad=Math.round(W*.025);
     const cx0=Math.max(0,r.x0-pad), cx1=Math.min(W,r.x1+pad), cy0=Math.max(0,r.y0-pad*2), cy1=Math.min(H,r.y1+pad*2);
     const cv=document.createElement("canvas"); cv.width=cx1-cx0; cv.height=cy1-cy0;
     cv.getContext("2d").drawImage(full,cx0,cy0,cv.width,cv.height,0,0,cv.width,cv.height);
     full.width=full.height=0;
     const sh=u=>({...u, x0:u.x0-cx0, x1:u.x1-cx0, y0:u.y0-cy0, y1:u.y1-cy0});
-    const words=r.lineUnits.reduce((s,u)=>s+u.words,0);
-    return {canvas:cv, cw:cv.width, ch:cv.height, gx0:r.x0-cx0, gx1:r.x1-cx0, zones:r.zones.map(sh), lineUnits:r.lineUnits.map(sh), words};
+    const lines=r.lineUnits.reduce((s,u)=>s+u.frac,0);
+    return {canvas:cv, cw:cv.width, ch:cv.height, gx0:r.x0-cx0, gx1:r.x1-cx0, zones:r.zones.map(sh), lineUnits:r.lineUnits.map(sh), lines, count:r.lineUnits.length};
   }
 }
 
 async function scanRender(num, unit){
   $("scanMsg").textContent="جارٍ تجهيز الصفحة…";
-  const a=await analyzePage(num);
+  let a;
+  try{ a=await analyzePage(num); }
+  catch(e){ SC.cache.delete(num); if(num===SC.page) $("scanMsg").textContent="تعذّر عرض هذه الصفحة. انتقل إلى التالية."; return; }
   if(num!==SC.page) return;
-  SC.a=a; SC.words[num]=a.words;
+  SC.a=a; SC.words[num]=a.lines;
   const w=$("scanWrap");
   w.querySelector("canvas")?.remove();
   w.prepend(a.canvas);
@@ -712,14 +750,14 @@ function scanTick(){
   }
   const u=SC.units[SC.unit++];
   hlScan(u);
-  S.timer=setTimeout(tick, Math.max(160, u.words*60000/S.wpm));
+  S.timer=setTimeout(tick, Math.max(250, u.frac*SC.wpl*60000/S.wpm));
   updateInfo();
 }
 
 async function openScan(m, doc){
   S.id = m.unsaved ? null : m.id; S.kind="scan"; S.title=m.title;
   SC.doc=doc; SC.pages=doc.numPages; SC.page=Math.min(m.scanPage||1, SC.pages);
-  SC.resumeUnit=m.scanUnit||0; SC.cache.clear(); SC.words=[]; SC.a=null;
+  SC.resumeUnit=m.scanUnit||0; SC.wpl=m.wpl||10; $("wplV").textContent=SC.wpl; SC.cache.clear(); SC.words=[]; SC.a=null;
   startReading();
 }
 async function newScanBook(doc, file, name){
@@ -736,7 +774,7 @@ async function newScanBook(doc, file, name){
 }
 
 $("scanWrap").addEventListener("click", e=>{
-  if(!SC.a || !SC.units.length) return;
+  if(swiped || !SC.a || !SC.units.length) return;
   const r=$("scanWrap").getBoundingClientRect();
   const x=(e.clientX-r.left)/r.width*SC.a.cw, y=(e.clientY-r.top)/r.height*SC.a.ch;
   let best=0, bd=1e9;
@@ -910,7 +948,7 @@ function paraStart(i){ // الرجوع إلى بداية الفقرة إن كا�
 
 function scanGo(d){
   const was=S.playing; pause();
-  if(d>0 && S.mode==="free" && SC.a){ const min=(performance.now()-SC.shownAt)/60000; if(min>0.05 && SC.a.words) realWpm=Math.round(SC.a.words/min); }
+  if(d>0 && S.mode==="free" && SC.a){ const min=(performance.now()-SC.shownAt)/60000; if(min>0.05 && SC.a.lines) realWpm=Math.round(SC.a.lines*SC.wpl/min); }
   const np=Math.max(1,Math.min(SC.pages, SC.page+d));
   if(np===SC.page){ if(was) play(); return; }
   SC.page=np; scanRender(np,0).then(()=>{ if(was) play(); });
@@ -953,22 +991,31 @@ $("text").onclick = e => {
   highlight(null); s.classList.add("mark"); S.hl=[s];
   updateInfo();
 };
-let tx0=null;
-$("reader").addEventListener("touchstart", e=>{ if(e.target.closest("#page,#flash,#scan")) tx0=e.touches[0].clientX; }, {passive:true});
+let tx0=null, ty0=0, tt0=0, swiped=false;
+$("reader").addEventListener("touchstart", e=>{
+  tx0=null;
+  if(e.touches.length!==1 || !e.target.closest("#page,#flash,#scan")) return;
+  if(e.target.closest("#scan") && +$("fsR").value>22) return;   // مع التكبير يُستخدم السحب للتمرير
+  tx0=e.touches[0].clientX; ty0=e.touches[0].clientY; tt0=Date.now();
+}, {passive:true});
 $("reader").addEventListener("touchend", e=>{
-  if(tx0===null) return; const dx=e.changedTouches[0].clientX-tx0; tx0=null;
-  if(Math.abs(dx)>60) dx>0 ? nextPage() : prevPage();
+  if(tx0===null) return;
+  const dx=e.changedTouches[0].clientX-tx0, dy=e.changedTouches[0].clientY-ty0; tx0=null;
+  if(Math.abs(dx)>90 && Math.abs(dx)>Math.abs(dy)*2.5 && Date.now()-tt0<700){
+    swiped=true; setTimeout(()=>swiped=false,400);
+    dx>0 ? nextPage() : prevPage();
+  }
 });
 
 /* المعلومات والتنقل */
 function updateInfo(){
   saveProgress();
   if(S.kind==="scan"){
-    const known=SC.words.filter(Boolean), avg=known.length ? known.reduce((a,b)=>a+b,0)/known.length : 250;
-    const leftWords=(SC.pages-SC.page)*avg + (SC.units.length ? (SC.units.length-SC.unit)/SC.units.length*(SC.a?SC.a.words:avg) : 0);
+    const known=SC.words.filter(v=>v>=3), avg=(known.length ? known.reduce((a,b)=>a+b,0)/known.length : 22)*SC.wpl;
+    const leftWords=(SC.pages-SC.page)*avg + (SC.units.length ? (SC.units.length-SC.unit)/SC.units.length*(SC.a?SC.a.lines*SC.wpl:avg) : 0);
     $("iPct").textContent=`صفحة ${SC.page} من ${SC.pages}`;
     $("iLeft").textContent="متبقٍ نحو "+fmtTime(Math.max(0,Math.round(leftWords/S.wpm)));
-    $("iReal").textContent = S.mode==="free" && realWpm ? `سرعتك ${realWpm} كلمة/د` : "";
+    $("iReal").textContent = S.mode==="free" && realWpm ? `سرعتك ${realWpm} كلمة/د` : (SC.a ? `${SC.a.count||0} سطرًا` : "");
     $("seek").value=Math.round((SC.page-1)/Math.max(1,SC.pages-1)*1000);
     $("wpmV").textContent=S.wpm; $("wpmR").value=S.wpm; $("wpmR2").textContent=S.wpm;
     $("spd").style.visibility = S.mode==="free" ? "hidden" : "visible";
@@ -996,7 +1043,9 @@ function jumpTo(frac){
   if(was) play();
 }
 $("seek").onchange = e => jumpTo(e.target.value/1000);
-$("goBtn").onclick = () => { jumpTo((+$("goPct").value||0)/100); $("panel").classList.add("hidden"); };
+$("goBtn").onclick = () => {
+  if(S.kind==="scan"){ const n=Math.max(1,Math.min(SC.pages,Math.round(+$("goPct").value||1))); jumpTo((n-1)/Math.max(1,SC.pages-1)); }
+  else jumpTo((+$("goPct").value||0)/100); $("panel").classList.add("hidden"); };
 
 function setWpm(v){ S.wpm=Math.max(100,Math.min(1200,v)); prefs.wpm=S.wpm; savePrefs(); updateInfo(); }
 $("slow").onclick=()=>setWpm(S.wpm-20);
@@ -1004,7 +1053,15 @@ $("fast").onclick=()=>setWpm(S.wpm+20);
 $("wpmR").oninput=e=>setWpm(+e.target.value);
 
 /* الإعدادات */
-$("gear").onclick=()=>{ pause(); $("goPct").value=(S.pos/(S.tokens.length||1)*100).toFixed(1); $("panel").classList.remove("hidden"); };
+$("wplMinus").onclick=()=>setWpl(SC.wpl-1);
+$("wplPlus").onclick=()=>setWpl(SC.wpl+1);
+function setWpl(v){ SC.wpl=Math.max(3,Math.min(30,v)); $("wplV").textContent=SC.wpl; if(S.id) DB.patch(S.id,{wpl:SC.wpl}).catch(()=>{}); updateInfo(); }
+$("gear").onclick=()=>{ pause();
+  const scan=S.kind==="scan";
+  $("wplRow").classList.toggle("hidden",!scan); $("wplHint").classList.toggle("hidden",!scan);
+  $("goLbl").textContent = scan ? "انتقل إلى صفحة" : "انتقل إلى"; $("goUnit").textContent = scan ? "" : "٪";
+  $("goPct").max = scan ? SC.pages : 100; $("goPct").step = scan ? 1 : 0.1;
+  $("goPct").value = scan ? SC.page : (S.pos/(S.tokens.length||1)*100).toFixed(1); $("panel").classList.remove("hidden"); };
 $("closePanel").onclick=()=>$("panel").classList.add("hidden");
 const root=document.documentElement.style;
 const PREF_KEY="qari-prefs";
