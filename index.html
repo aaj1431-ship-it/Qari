@@ -89,6 +89,13 @@ body.dark #hlbox{mix-blend-mode:normal;background:rgba(242,193,78,.28)}
 #hlbox.mark{background:transparent;outline:2.5px solid var(--sea)}
 #scanMsg{text-align:center;color:var(--soft);padding:6px}
 html.noguides #guides,html.noguides #sguides{display:none}
+#fsBtn{padding:6px 9px;line-height:0}
+/* وضع ملء الشاشة: نخفي ما لا يلزم ونترك المساحة للنص */
+body.fs .top{padding-top:4px}
+body.fs #info, body.fs #seek, body.fs .modes{display:none}
+body.fs .top .t{font-size:.9rem;opacity:.7}
+body.fs #page, body.fs #scan, body.fs #flash{margin:0 4px;border-radius:10px}
+body.fs .bottom{padding-top:4px}
 #flash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 10px;
   background:var(--paper);border-radius:16px;border:1.5px solid var(--line)}
 #flashWord{font-size:calc(var(--fs) * 1.7);font-weight:600;text-align:center;padding:0 16px;min-height:1.6em}
@@ -174,6 +181,9 @@ html.noguides #guides,html.noguides #sguides{display:none}
   <div class="top">
     <button id="back" aria-label="المكتبة">المكتبة</button>
     <div class="t" id="rTitle"></div>
+    <button id="fsBtn" aria-label="ملء الشاشة" title="ملء الشاشة">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path id="fsIco" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
     <button id="gear" aria-label="الإعدادات">الإعدادات</button>
   </div>
   <div id="info"><span id="iPct"></span><span id="iLeft"></span><span id="iReal"></span></div>
@@ -809,7 +819,7 @@ function startReading(){
     if(s){ s.classList.add("mark"); S.hl=[s]; }
   }
 }
-$("back").onclick = async () => { letSleep(); pause(); await saveProgress(true); renderShelf(); $("reader").classList.add("hidden"); $("lib").classList.remove("hidden"); };
+$("back").onclick = async () => { if(inFs()) (document.exitFullscreen||document.webkitExitFullscreen).call(document).catch(()=>{}); letSleep(); pause(); await saveProgress(true); renderShelf(); $("reader").classList.add("hidden"); $("lib").classList.remove("hidden"); };
 
 function renderPage(start){
   const T=S.tokens, box=$("page"), tx=$("text");
@@ -1091,6 +1101,27 @@ document.querySelectorAll("#themeRow button").forEach(b=>{ if(b.dataset.t===(pre
 document.querySelectorAll("#guideRow button").forEach(b=>{ if(b.dataset.g===(prefs.guides||"1")){ group("guideRow",b); document.documentElement.classList.toggle("noguides", b.dataset.g==="0"); } });
 renderShelf();
 if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
+
+/* ملء الشاشة */
+const fsEl=document.documentElement;
+const canFs=!!(fsEl.requestFullscreen||fsEl.webkitRequestFullscreen);
+if(!canFs) $("fsBtn").classList.add("hidden");
+const inFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+$("fsBtn").onclick=async()=>{
+  try{
+    if(inFs()) await (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+    else await (fsEl.requestFullscreen||fsEl.webkitRequestFullscreen).call(fsEl,{navigationUI:"hide"});
+  }catch(e){}
+};
+function onFs(){
+  const on=inFs();
+  document.body.classList.toggle("fs", on);
+  $("fsIco").setAttribute("d", on ? "M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" : "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5");
+  $("fsBtn").setAttribute("aria-label", on ? "الخروج من ملء الشاشة" : "ملء الشاشة");
+  setTimeout(relayout, 250);
+}
+document.addEventListener("fullscreenchange", onFs);
+document.addEventListener("webkitfullscreenchange", onFs);
 
 let rz; addEventListener("resize",()=>{ clearTimeout(rz); rz=setTimeout(relayout,200); });
 addEventListener("keydown", e=>{
