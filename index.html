@@ -11,17 +11,21 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&display=swap">
 <style>
-:root{--bg:#E9EFEC;--paper:#FBFCFB;--ink:#1D2A3A;--soft:#5B6B78;--dim:#A3AFB7;
-  --line:#C9D4CF;--sea:#2E6F8E;--glow:#F2C14E;--guide:rgba(46,111,142,.28);--fs:22px;--lh:2.1}
-body.sepia{--bg:#E8DCC2;--paper:#F6EEDC;--ink:#3B2F22;--soft:#7A6A55;--dim:#B9A98F;--line:#D8C8A8;--guide:rgba(122,90,50,.3)}
-body.dark{--bg:#10171F;--paper:#18222D;--ink:#DCE4EA;--soft:#8C9AA6;--dim:#4E5D6A;--line:#2B3947;
-  --sea:#5FA8C9;--glow:#8A6D1E;--guide:rgba(95,168,201,.3)}
+:root{--bg:#EDF1F0;--paper:#FFFFFF;--ink:#16232E;--soft:#5E7182;--dim:#A7B4BD;
+  --line:#D9E1E0;--sea:#1F6F8B;--sea2:#2D8AA8;--glow:#F0C05A;--guide:rgba(31,111,139,.25);
+  --shadow:0 2px 10px rgba(22,35,46,.06);--fs:22px;--lh:2.1}
+body.sepia{--bg:#EADFC8;--paper:#F8F1E1;--ink:#3B2F22;--soft:#7A6A55;--dim:#B9A98F;--line:#DFD0B2;
+  --sea:#8A5A2B;--sea2:#A06B33;--guide:rgba(138,90,43,.3);--shadow:0 2px 10px rgba(59,47,34,.08)}
+body.dark{--bg:#0E151C;--paper:#18222C;--ink:#DDE5EB;--soft:#8C9AA6;--dim:#4E5D6A;--line:#28353F;
+  --sea:#5FA8C9;--sea2:#74B8D6;--glow:#8A6D1E;--guide:rgba(95,168,201,.3);--shadow:none}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);
   font-family:"Noto Naskh Arabic","Geeza Pro","Traditional Arabic",Tahoma,serif;line-height:1.7}
 button,select,input{font:inherit;color:inherit}
-button{cursor:pointer;border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:7px 12px}
+button{cursor:pointer;border:1.5px solid var(--line);background:var(--paper);border-radius:12px;padding:7px 12px;
+  transition:background .15s,border-color .15s}
+button:active{background:var(--bg)}
 button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--glow);outline-offset:2px}
 .hidden{display:none!important}
@@ -29,7 +33,22 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .vh{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden}
 
 /* المكتبة */
-#lib{max-width:640px;margin:0 auto;padding:24px 16px 48px}
+#lib{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.logo{line-height:0;filter:drop-shadow(var(--shadow))}
+.wm b{display:block;font-size:1.5rem;line-height:1.25}
+.wm small{color:var(--soft)}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.tools button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;font-size:.85rem;box-shadow:var(--shadow)}
+.tools span{font-size:1.25rem;line-height:1}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:4px}
+.chip{white-space:nowrap;border-radius:999px;padding:5px 14px;font-size:.9rem}
+.chip.on{background:var(--sea);border-color:var(--sea);color:#fff}
+.group{background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:4px 6px;margin:8px 0}
+.group .book{box-shadow:none;margin:4px 0}
+.book.sub{background:var(--paper);margin-inline-start:12px}
+.merge{width:calc(100% - 12px);margin:6px}
+.ico{padding:7px 10px;line-height:1;border-radius:10px}
 #lib h1{font-size:2rem;margin:0}
 .sub{color:var(--soft);margin:2px 0 22px}
 .upload{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;
@@ -42,13 +61,13 @@ textarea{width:100%;min-height:130px;padding:10px;border-radius:10px;border:1.5p
   background:var(--paper);color:var(--ink);font:inherit;margin:8px 0}
 #ocr{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px;margin-top:18px}
 #ocr h2{margin:0 0 4px;font-size:1.2rem}
-#card{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px;margin-top:18px}
+#card{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px;margin-top:18px;box-shadow:var(--shadow)}
 #card h2{margin:0 0 4px;font-size:1.3rem}
 #preview{color:var(--soft);font-size:.95rem;max-height:6.5em;overflow:hidden;margin:10px 0}
-.big{width:100%;background:var(--sea);border-color:var(--sea);color:#fff;font-weight:700;font-size:1.15rem;padding:12px;border-radius:14px;margin-top:8px}
+.big{width:100%;background:linear-gradient(180deg,var(--sea2),var(--sea));border-color:var(--sea);color:#fff;font-weight:700;font-size:1.15rem;padding:12px;border-radius:14px;margin-top:8px;box-shadow:var(--shadow)}
 #shelf h2{font-size:1.2rem;margin:26px 0 8px}
 .book{display:flex;align-items:center;gap:10px;background:var(--paper);border:1.5px solid var(--line);
-  border-radius:14px;padding:10px 12px;margin:8px 0}
+  border-radius:14px;padding:10px 12px;margin:8px 0;box-shadow:var(--shadow)}
 .book .bt{flex:1;min-width:0;cursor:pointer;text-align:right;border:none;background:none;padding:0}
 .book .bt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .book .bt small{color:var(--soft)}
@@ -80,13 +99,12 @@ body.dark #text span.hl{color:#fff}
 #scan{flex:1;min-height:0;overflow:auto;margin:0 10px;background:var(--paper);border-radius:16px;border:1.5px solid var(--line)}
 #scanWrap{position:relative;width:100%;margin:0 auto}
 #scanWrap canvas{display:block;width:100%;height:auto}
-body.dark #scanWrap canvas{filter:invert(.88) hue-rotate(180deg)}
-body.sepia #scanWrap canvas{filter:sepia(.45) brightness(.97)}
 #sguides i{position:absolute;top:0;bottom:0;border-inline-start:1.5px dashed var(--guide);pointer-events:none}
 #hlbox{position:absolute;background:rgba(242,193,78,.42);border-radius:6px;pointer-events:none;
   mix-blend-mode:multiply;transition:left .12s,top .12s,width .12s,height .12s}
 body.dark #hlbox{mix-blend-mode:normal;background:rgba(242,193,78,.28)}
 #hlbox.mark{background:transparent;outline:2.5px solid var(--sea)}
+#passTag{color:var(--sea);font-weight:600}
 #scanMsg{text-align:center;color:var(--soft);padding:6px}
 html.noguides #guides,html.noguides #sguides{display:none}
 #fsBtn{padding:6px 9px;line-height:0}
@@ -96,6 +114,55 @@ body.fs #info, body.fs #seek, body.fs .modes{display:none}
 body.fs .top .t{font-size:.9rem;opacity:.7}
 body.fs #page, body.fs #scan, body.fs #flash{margin:0 4px;border-radius:10px}
 body.fs .bottom{padding-top:4px}
+#warm{position:fixed;inset:0;background:var(--bg);z-index:12;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;padding:24px}
+#warmWord{font-size:2rem;font-weight:600;text-align:center;min-height:2.4em;display:flex;align-items:center}
+#warmHint{color:var(--soft);text-align:center;margin:0}
+.wbar{width:80%;height:5px;background:var(--line);border-radius:3px;overflow:hidden}
+.wbar i{display:block;height:100%;width:0;background:var(--sea)}
+.chk{display:flex;gap:8px;align-items:center;margin:10px 0}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:11;display:flex;align-items:flex-end}
+#sheet .qbox{background:var(--paper);width:100%;max-height:85dvh;overflow:auto;border-radius:18px 18px 0 0;
+  padding:16px 18px calc(18px + env(safe-area-inset-bottom))}
+.srow2{display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--line)}
+.rowBtn{flex:1;text-align:right;border:none;background:none;padding:10px 2px}
+.rowBtn b{display:block;font-weight:600}
+.rowBtn small{color:var(--soft)}
+.searchRow{display:flex;gap:6px;margin-bottom:8px}
+.searchRow input{flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+#markBtn{padding:6px 10px;font-size:1.05rem}
+#markBtn.saved{background:var(--glow);border-color:var(--glow)}
+#quiz{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10;display:flex;align-items:flex-end}
+#quiz .qbox{background:var(--paper);width:100%;max-height:88dvh;overflow:auto;border-radius:18px 18px 0 0;
+  padding:16px 18px calc(18px + env(safe-area-inset-bottom))}
+#quiz h3{margin:0 0 6px}
+.qq{margin:12px 0;padding-top:8px;border-top:1px solid var(--line)}
+.qq p{margin:0 0 6px;font-weight:600}
+.qq blockquote{margin:0 0 8px;padding:8px 10px;background:var(--bg);border-radius:8px;line-height:1.9}
+.qq button{display:block;width:100%;text-align:right;margin:6px 0}
+.qq button.ok{background:#2F7D55;color:#fff;border-color:#2F7D55}
+.qq button.no{background:#B4483A;color:#fff;border-color:#B4483A}
+.qq textarea{min-height:60px}
+.stars{display:flex;gap:4px;flex-wrap:wrap}.stars button{flex:1;min-width:60px;text-align:center;padding:6px 2px;font-size:.88rem}
+#quizScore{font-weight:700;margin:8px 0}
+.big:disabled{opacity:.45}
+#stats{max-width:640px;margin:0 auto;padding:16px 16px 40px}
+#stats h1{font-size:1.6rem;margin:6px 0 12px}
+#statCards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px}
+.sc b{display:block;font-size:1.5rem;line-height:1.4}
+.sc small{color:var(--soft);font-size:.82rem}
+.chartBox{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:10px;margin:14px 0}
+#statChart{width:100%;height:auto;display:block}
+#statChart .bar{fill:var(--sea);opacity:.8}
+#statChart .dot{fill:var(--glow);stroke:var(--ink);stroke-width:1}
+#statChart .cl{fill:none;stroke:var(--glow);stroke-width:2}
+#statChart .gl{stroke:var(--line);stroke-width:1}
+#statChart .ax{fill:var(--soft);font-size:10px;font-family:inherit}
+.legend{display:flex;gap:14px;font-size:.82rem;color:var(--soft);margin-top:4px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:4px;vertical-align:middle}
+.srow{border-bottom:1px solid var(--line);padding:8px 2px}
+.srow b{display:block}.srow small{color:var(--soft)}
 #flash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 10px;
   background:var(--paper);border-radius:16px;border:1.5px solid var(--line)}
 #flashWord{font-size:calc(var(--fs) * 1.7);font-weight:600;text-align:center;padding:0 16px;min-height:1.6em}
@@ -104,7 +171,7 @@ body.fs .bottom{padding-top:4px}
 .modes{display:flex;gap:6px}.modes button{flex:1;padding:6px 4px;font-size:.92rem}
 .ctl{display:flex;gap:6px;align-items:center}
 .ctl .pg{width:48px;font-size:1.3rem;padding:4px}
-#play{flex:1;background:var(--sea);color:#fff;border-color:var(--sea);font-weight:700;font-size:1.05rem}
+#play{flex:1;background:linear-gradient(180deg,var(--sea2),var(--sea));color:#fff;border-color:var(--sea);font-weight:700;font-size:1.05rem}
 .spd{display:flex;align-items:center;gap:4px}
 .spd button{width:38px;padding:4px}
 .spd b{min-width:48px;text-align:center}
@@ -123,8 +190,22 @@ body.fs .bottom{padding-top:4px}
 <body>
 
 <section id="lib">
-  <h1>القارئ السريع</h1>
-  <p class="sub">اقرأ كتبك كاملة بالأعمدة الثلاثة، أو بالمؤشر السطري، أو بعرض الومضة.</p>
+  <header class="brand">
+    <span class="logo" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="44" height="44">
+        <rect x="2" y="2" width="44" height="44" rx="12" fill="var(--sea)"/>
+        <path d="M24 12.5 12 9.5v27l12 3 12-3v-27z" fill="#fff" opacity=".96"/>
+        <path d="M24 12.5v27" stroke="var(--sea)" stroke-width="1.6"/>
+        <g stroke="var(--glow)" stroke-width="2.2" stroke-linecap="round">
+          <path d="M16.5 15v19M31.5 15v19"/>
+        </g>
+        <g stroke="#93A9B5" stroke-width="1.4" stroke-linecap="round" opacity=".85">
+          <path d="M13.8 18h8.4M13.8 23h8.4M13.8 28h8.4M25.8 18h8.4M25.8 23h8.4M25.8 28h8.4"/>
+        </g>
+      </svg>
+    </span>
+    <span class="wm"><b>القارئ السريع</b><small>الأعمدة الثلاثة · المؤشر · الومضة</small></span>
+  </header>
 
   <input type="file" id="file" class="vh" accept=".txt,.pdf,.epub,text/plain,application/pdf,application/epub+zip">
   <button class="upload" id="pick">
@@ -162,8 +243,15 @@ body.fs .bottom{padding-top:4px}
     <button id="cardScan" class="hidden" style="width:100%;margin-top:8px">اعرض صفحات الكتاب الأصلية</button>
   </div>
 
+  <div class="tools">
+    <button id="statsBtn"><span>📈</span>إحصائياتي</button>
+    <button id="notesBtn"><span>★</span>علاماتي</button>
+    <button id="backupBtn"><span>💾</span>نسخة احتياطية</button>
+  </div>
+
   <div id="shelf" class="hidden">
     <h2>مكتبتي</h2>
+    <div id="cats" class="chips"></div>
     <div id="books"></div>
   </div>
 
@@ -177,16 +265,56 @@ body.fs .bottom{padding-top:4px}
   <p class="hint">يحفظ التطبيق كتبك وموضع توقفك تلقائيًا على هذا الجهاز. فتح أول ملف PDF أو EPUB يحتاج اتصالًا بالإنترنت، وبعدها يعمل التطبيق دونه.</p>
 </section>
 
+<section id="stats" class="hidden">
+  <button id="statsBack">المكتبة</button>
+  <h1>إحصائياتي</h1>
+  <div id="statCards"></div>
+  <div class="chartBox">
+    <svg id="statChart" viewBox="0 0 340 170" role="img" aria-label="السرعة والفهم في آخر الجلسات"></svg>
+    <div class="legend"><span><i style="background:var(--sea)"></i>السرعة</span><span><i style="background:var(--glow)"></i>الفهم ٪</span></div>
+    <p class="hint hidden" id="statEmpty">لا توجد جلسات بعد. تُسجَّل الجلسة تلقائيًا عند الخروج من صفحة القراءة.</p>
+  </div>
+  <h2 style="font-size:1.1rem">سجل الجلسات</h2>
+  <div id="statList"></div>
+  <button id="statsReset" style="margin-top:16px">حذف الإحصائيات</button>
+</section>
+
+<div id="warm" class="hidden">
+  <p id="warmHint"></p>
+  <div id="warmWord"></div>
+  <div class="wbar"><i id="warmBar"></i></div>
+  <button id="warmSkip">تخطي الإحماء</button>
+</div>
+
+<div id="sheet" class="hidden"><div class="qbox">
+  <h3 id="sheetTitle"></h3>
+  <div id="sheetBody"></div>
+  <button class="big" id="sheetClose">إغلاق</button>
+</div></div>
+
+<div id="quiz" class="hidden"><div class="qbox">
+  <h3 id="quizTitle"></h3>
+  <div id="quizBody"></div>
+  <p id="quizScore"></p>
+  <button class="big" id="quizGo">متابعة القراءة</button>
+  <button id="quizSkip" style="width:100%;margin-top:8px">تخطي الاختبار</button>
+</div></div>
+
 <section id="reader" class="hidden">
   <div class="top">
-    <button id="back" aria-label="المكتبة">المكتبة</button>
+    <button id="back" class="ico" aria-label="المكتبة" title="المكتبة">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
     <div class="t" id="rTitle"></div>
+    <button id="markBtn" aria-label="إضافة علامة" title="إضافة علامة">★</button>
     <button id="fsBtn" aria-label="ملء الشاشة" title="ملء الشاشة">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path id="fsIco" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
     </button>
-    <button id="gear" aria-label="الإعدادات">الإعدادات</button>
+    <button id="gear" class="ico" aria-label="الإعدادات" title="الإعدادات">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>
+    </button>
   </div>
-  <div id="info"><span id="iPct"></span><span id="iLeft"></span><span id="iReal"></span></div>
+  <div id="info"><span id="iPct"></span><span id="passTag"></span><span id="iLeft"></span><span id="iReal"></span></div>
   <input type="range" id="seek" min="0" max="1000" value="0" aria-label="الانتقال في الكتاب">
 
   <div id="scan" class="hidden"><div id="scanMsg"></div><div id="scanWrap"><div id="sguides"><i></i><i></i></div><div id="hlbox" class="hidden"></div></div></div>
@@ -218,6 +346,22 @@ body.fs .bottom{padding-top:4px}
     <div class="set"><span>حجم الخط والتكبير</span><input type="range" id="fsR" min="16" max="34" step="1"></div>
     <div class="set"><span>تباعد الأسطر</span><input type="range" id="lhR" min="1.6" max="2.8" step="0.1"></div>
     <div class="set"><span>كلمات الومضة</span><div class="row" id="chunkRow"></div></div>
+    <div class="set"><span>التنقل</span><div class="row">
+      <button id="tocBtn">الفهرس</button><button id="searchBtn">بحث</button><button id="notesBtn2">علامات الكتاب</button></div></div>
+    <div class="set"><span>ضبط السرعة تلقائيًا</span><div class="row" id="autoRow">
+      <button data-a="1">مفعّل</button><button data-a="0">معطّل</button></div></div>
+    <div class="set"><span>وضع التسارع</span><div class="row" id="burstRow">
+      <button data-b="1">مفعّل</button><button data-b="0">معطّل</button></div></div>
+    <p class="hint">التسارع: مرور سريع على الصفحة ثم قراءة متأنية لها بالسرعة المعتادة.</p>
+    <div class="set"><span>الاستماع مع القراءة</span><div class="row" id="ttsRow">
+      <button data-t2="1">مفعّل</button><button data-t2="0">معطّل</button></div></div>
+    <div class="set" id="scanSets"><span>الصفحات المصوّرة</span><div class="row">
+      <button data-s1="deskew">تقويم الميلان</button><button data-s1="sharp">تحسين الوضوح</button>
+      <button data-s1="cols2">عمودان</button><button data-s1="foot">تخطي الحواشي</button></div></div>
+    <div class="set"><span>إحماء قبل الجلسة</span><div class="row" id="warmRow">
+      <button data-w="1">مفعّل</button><button data-w="0">معطّل</button></div></div>
+    <div class="set"><span>اختبار فهم كل</span><div class="row" id="quizRow">
+      <button data-q="0">إيقاف</button><button data-q="3">٣ صفحات</button><button data-q="5">٥</button><button data-q="10">١٠</button></div></div>
     <div class="set"><span>خطوط الأعمدة</span><div class="row" id="guideRow">
       <button data-g="1" class="on">ظاهرة</button><button data-g="0">مخفية</button></div></div>
     <div class="set"><span>المظهر</span><div class="row" id="themeRow">
@@ -372,7 +516,7 @@ async function showSaved(id){
   const [m,t]=await Promise.all([DB.get("meta",id), DB.get("texts",id)]);
   if(!m||!t||!t.raw) return;
   S.id=id; S.raw=t.raw; S.kind=m.kind; S.title=m.title; prepare();
-  S.pos=Math.min(m.pos||0, Math.max(0,S.tokens.length-1)); S.resume=m.pageStart; S.stack=[];
+  S.toc=m.toc||null; S.pos=Math.min(m.pos||0, Math.max(0,S.tokens.length-1)); S.resume=m.pageStart; S.stack=[]; applyBookPrefs(m);
   $("bTitle").textContent=m.title; showMeta();
   $("fix").classList.add("hidden"); $("cardScan").classList.add("hidden");
   $("card").classList.remove("hidden");
@@ -384,23 +528,27 @@ async function readPdf(f, name){
   msg("جارٍ فتح الكتاب…");
   await loadScript(PDFJS); pdfjsLib.GlobalWorkerOptions.workerSrc = PDFW;
   const doc = await pdfjsLib.getDocument({data: await f.arrayBuffer()}).promise;
-  const lines = [];
+  const lines = [], pageOff=[];
+  let chars=0;
   for(let p=1; p<=doc.numPages; p++){
+    pageOff[p]=chars;
     if(p%5===1) msg(`جارٍ استخراج النص: صفحة ${p} من ${doc.numPages}`);
     const tc = await (await doc.getPage(p)).getTextContent();
     let line="", lastY=null;
     for(const it of tc.items){
       const y = it.transform[5];
-      if(lastY!==null && Math.abs(y-lastY)>3){ lines.push(line); line=""; }
-      line += it.str; if(it.hasEOL){ lines.push(line); line=""; }
+      if(lastY!==null && Math.abs(y-lastY)>3){ lines.push(line); chars+=line.length+1; line=""; }
+      line += it.str; if(it.hasEOL){ lines.push(line); chars+=line.length+1; line=""; }
       lastY = y;
     }
-    lines.push(line);
+    lines.push(line); chars+=line.length+1;
   }
   const letters = lines.join("").replace(/[\s\d\W_]/g,"").length;
   S.lastPdf={doc, file:f, name};
   if(letters < doc.numPages*15) return offerOcr(doc, name);
-  setBook(lines.join("\n"), "pdf", name);
+  const raw=lines.join("\n");
+  const toc=(await pdfToc(doc)).map(e=>({t:e.t, d:e.d, p:e.p, k:wordsBefore(raw, pageOff[e.p]||0)}));
+  setBook(raw, "pdf", name, toc);
 }
 
 async function readEpub(f, name){
@@ -416,7 +564,8 @@ async function readEpub(f, name){
   opf.querySelectorAll("manifest > item").forEach(i => man[i.getAttribute("id")] = i.getAttribute("href"));
   const tEl = opf.getElementsByTagNameNS("*","title")[0];
   const refs = [...opf.querySelectorAll("spine > itemref")];
-  const out = [];
+  const out = [], toc=[];
+  let chars=0;
   const SEL = "p,h1,h2,h3,h4,h5,h6,li,blockquote,pre";
   for(let k=0; k<refs.length; k++){
     const href = man[refs[k].getAttribute("idref")]; if(!href) continue;
@@ -424,10 +573,15 @@ async function readEpub(f, name){
     msg(`جارٍ قراءة الفصول: ${k+1} من ${refs.length}`);
     const d = new DOMParser().parseFromString(await file.async("text"), "text/html");
     const blocks = [...d.querySelectorAll(SEL)].filter(b => !b.parentElement.closest(SEL));
+    const head=d.querySelector("h1,h2,h3,title");
+    toc.push({t:(head && head.textContent.trim().slice(0,90)) || `الفصل ${k+1}`, d:0, off:chars});
+    const before=out.length;
     if(blocks.length) blocks.forEach(b => out.push(b.textContent));
     else if(d.body) out.push(d.body.textContent);
+    for(let j=before;j<out.length;j++) chars+=out[j].length+2;
   }
-  setBook(out.join("\n\n"), "epub", (tEl && tEl.textContent.trim()) || name);
+  const raw2=out.join("\n\n");
+  setBook(raw2, "epub", (tEl && tEl.textContent.trim()) || name, toc.map(e=>({t:e.t,d:0,k:wordsBefore(raw2,e.off)})));
 }
 function resolvePath(base, href){
   const parts = (base + href).split("/"), st = [];
@@ -461,9 +615,10 @@ const wordCount = () => S.tokens.filter(x=>x!=="\n").length;
 const DB = {
   db:null,
   open(){ return this.db ? Promise.resolve(this.db) : new Promise((res,rej)=>{
-    const r=indexedDB.open("qari",2);
+    const r=indexedDB.open("qari",4);
     r.onupgradeneeded=()=>{ const d=r.result;
-      ["meta","texts","files"].forEach(n=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:"id"}); }); };
+      ["meta","texts","files"].forEach(n=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:"id"}); });
+      ["sessions","notes"].forEach(n=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:"id",autoIncrement:true}); }); };
     r.onsuccess=()=>res(this.db=r.result); r.onerror=()=>rej(r.error); }); },
   async run(store, mode, fn){
     const db=await this.open();
@@ -474,33 +629,160 @@ const DB = {
   get(st,id){ return this.run(st,"readonly",s=>s.get(id)); },
   all(st){ return this.run(st,"readonly",s=>s.getAll()); },
   del(st,id){ return this.run(st,"readwrite",s=>s.delete(id)); },
+  add(st,v){ return this.run(st,"readwrite",s=>s.add(v)); },
+  clear(st){ return this.run(st,"readwrite",s=>s.clear()); },
   async patch(id,o){ const m=await this.get("meta",id); if(m){ Object.assign(m,o); await this.put("meta",m); } }
 };
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist();
 
+/* ───── المكتبة: الأقسام والأجزاء ───── */
+let libCat="all", libOpen={};
+const catOf=m=>(m.cat||"").trim();
+const groupOf=m=>(m.group||"").trim();
+const bookLine=m=>{
+  const pct=Math.min(100, m.pos/(m.len||1)*100);
+  const ocrNote = m.kind==="ocr" && m.ocrDone<m.pages ? ` · محوَّل حتى ص ${m.ocrDone} من ${m.pages}` : "";
+  const txt = m.kind==="scan"
+    ? (m.scanPage>1||m.scanUnit ? `توقفت عند صفحة ${m.scanPage} من ${m.pages}` : `${m.pages} صفحة، لم تبدأ بعد`) + " · صفحات أصلية"
+    : (pct>=99.5 ? "أُنهي" : pct>0 ? `توقفت عند ${pct.toFixed(1)}٪` : `${(m.words||0).toLocaleString("ar")} كلمة، لم تبدأ بعد`) + ocrNote;
+  return {pct, txt};
+};
+function bookRow(m, small){
+  const {pct,txt}=bookLine(m);
+  const row=document.createElement("div"); row.className="book"+(small?" sub":"");
+  const bt=document.createElement("button"); bt.className="bt";
+  const t=document.createElement("b"); t.textContent=(small && m.vol?`الجزء ${m.vol}: `:"")+m.title;
+  const sm=document.createElement("small"); sm.textContent=txt;
+  const bar=document.createElement("div"); bar.className="pbar"; bar.innerHTML=`<i style="width:${pct}%"></i>`;
+  bt.append(t,sm,bar); bt.onclick=()=>openSaved(m.id);
+  const org=document.createElement("button"); org.className="ico"; org.title="تنظيم"; org.setAttribute("aria-label","تنظيم الكتاب");
+  org.textContent="⋮"; org.onclick=()=>organize(m);
+  row.append(bt,org);
+  return row;
+}
 async function renderShelf(){
   let list=[];
   try{ list=await DB.all("meta"); }catch(e){ return; }
   list.sort((a,b)=>(b.opened||b.added)-(a.opened||a.added));
   $("shelf").classList.toggle("hidden", !list.length);
+  // شرائح الأقسام
+  const cats=[...new Set(list.map(catOf).filter(Boolean))].sort();
+  const chips=$("cats"); chips.innerHTML="";
+  const addChip=(id,label)=>{ const b=document.createElement("button"); b.className="chip"+(libCat===id?" on":"");
+    b.textContent=label; b.onclick=()=>{ libCat=id; renderShelf(); }; chips.appendChild(b); };
+  if(cats.length){ addChip("all","الكل"); cats.forEach(c=>addChip(c,c));
+    if(list.some(m=>!catOf(m))) addChip("__none","بلا قسم"); }
+  const shown = libCat==="all" ? list : libCat==="__none" ? list.filter(m=>!catOf(m)) : list.filter(m=>catOf(m)===libCat);
+  // تجميع الأجزاء
+  const groups=new Map(), singles=[];
+  shown.forEach(m=>{ const g=groupOf(m); if(!g) return singles.push(m);
+    if(!groups.has(g)) groups.set(g,[]); groups.get(g).push(m); });
   const box=$("books"); box.innerHTML="";
-  list.forEach(m=>{
-    const pct=Math.min(100, m.pos/(m.len||1)*100);
-    const row=document.createElement("div"); row.className="book";
+  const items=[...singles.map(m=>({one:m, at:m.opened||m.added})),
+    ...[...groups.entries()].map(([g,arr])=>({g, arr:arr.sort((a,b)=>(a.vol||0)-(b.vol||0)), at:Math.max(...arr.map(x=>x.opened||x.added))}))];
+  items.sort((a,b)=>b.at-a.at);
+  items.forEach(it=>{
+    if(it.one){ box.appendChild(bookRow(it.one)); return; }
+    if(it.arr.length===1){ box.appendChild(bookRow(it.arr[0])); return; }
+    const cur=it.arr.slice().sort((a,b)=>(b.opened||0)-(a.opened||0))[0];
+    const done=it.arr.filter(m=>m.pos/(m.len||1)>=.995).length;
+    const {pct}=bookLine(cur);
+    const wrap=document.createElement("div"); wrap.className="group";
+    const head=document.createElement("div"); head.className="book";
     const bt=document.createElement("button"); bt.className="bt";
-    const t=document.createElement("b"); t.textContent=m.title;
+    const t=document.createElement("b"); t.textContent="📚 "+it.g;
     const sm=document.createElement("small");
-    const ocrNote = m.kind==="ocr" && m.ocrDone<m.pages ? ` (محوَّل حتى ص ${m.ocrDone} من ${m.pages})` : "";
-    if(m.kind==="scan") sm.textContent = (m.scanPage>1||m.scanUnit ? `توقفت عند صفحة ${m.scanPage} من ${m.pages}` : `${m.pages} صفحة، لم تبدأ بعد`) + " (الصفحات الأصلية)";
-    else sm.textContent = (pct>=99.5 ? "أُنهي" : pct>0 ? `توقفت عند ${pct.toFixed(1)}٪` : `${m.words.toLocaleString("ar")} كلمة، لم تبدأ بعد`) + ocrNote;
+    sm.textContent=`${it.arr.length} أجزاء · أُنهي ${done} · آخر قراءة: الجزء ${cur.vol||"؟"} عند ${pct.toFixed(0)}٪`;
     const bar=document.createElement("div"); bar.className="pbar"; bar.innerHTML=`<i style="width:${pct}%"></i>`;
-    bt.append(t,sm,bar); bt.onclick=()=>openSaved(m.id);
-    const del=document.createElement("button"); del.className="del"; del.textContent="حذف";
-    del.onclick=async()=>{ if(!confirm(`حذف «${m.title}» من المكتبة؟`)) return;
-      await DB.del("meta",m.id); await DB.del("texts",m.id); await DB.del("files",m.id).catch(()=>{}); if(S.id===m.id) S.id=null; renderShelf(); };
-    row.append(bt,del); box.appendChild(row);
+    bt.append(t,sm,bar);
+    bt.onclick=()=>{ libOpen[it.g]=!libOpen[it.g]; renderShelf(); };
+    const go=document.createElement("button"); go.className="ico"; go.textContent="▶"; go.title="متابعة";
+    go.setAttribute("aria-label","متابعة الجزء الأخير"); go.onclick=()=>openSaved(cur.id);
+    head.append(bt,go); wrap.appendChild(head);
+    if(libOpen[it.g]){
+      it.arr.forEach(m=>wrap.appendChild(bookRow(m,true)));
+      if(it.arr.every(m=>m.kind!=="scan")){
+        const mg=document.createElement("button"); mg.className="merge"; mg.textContent="دمج الأجزاء في كتاب واحد";
+        mg.onclick=()=>mergeGroup(it.g, it.arr); wrap.appendChild(mg);
+      } else {
+        const p=document.createElement("p"); p.className="hint";
+        p.textContent="لا يمكن دمج الكتب المصوّرة، لكنها ستتابع من جزء إلى آخر تلقائيًا.";
+        wrap.appendChild(p);
+      }
+    }
+    box.appendChild(wrap);
   });
 }
+
+/* تنظيم كتاب: القسم والسلسلة ورقم الجزء */
+async function organize(m){
+  let list=[]; try{ list=await DB.all("meta"); }catch(e){}
+  const cats=[...new Set(list.map(catOf).filter(Boolean))].sort();
+  const grps=[...new Set(list.map(groupOf).filter(Boolean))].sort();
+  openSheet("تنظيم: "+m.title, box=>{
+    box.innerHTML=`
+      <div class="set"><span>القسم</span><input id="oCat" list="catList" placeholder="مثال: تاريخ" value="${(m.cat||"").replace(/"/g,"&quot;")}"></div>
+      <datalist id="catList">${cats.map(c=>`<option value="${c}">`).join("")}</datalist>
+      <div class="set"><span>اسم الكتاب (للأجزاء)</span><input id="oGrp" list="grpList" placeholder="مثال: البداية والنهاية" value="${(m.group||"").replace(/"/g,"&quot;")}"></div>
+      <datalist id="grpList">${grps.map(c=>`<option value="${c}">`).join("")}</datalist>
+      <div class="set"><span>رقم الجزء</span><input type="number" id="oVol" min="1" value="${m.vol||""}"></div>
+      <p class="hint">الكتب التي تحمل الاسم نفسه تُجمع في بطاقة واحدة مرتبة بأرقام أجزائها.</p>`;
+    const save=document.createElement("button"); save.className="big"; save.textContent="حفظ";
+    save.onclick=async()=>{
+      await DB.patch(m.id,{cat:$("oCat").value.trim(), group:$("oGrp").value.trim(), vol:+$("oVol").value||null});
+      $("sheet").classList.add("hidden"); libCat="all"; renderShelf();
+    };
+    const del=document.createElement("button"); del.style.cssText="width:100%;margin-top:8px"; del.textContent="حذف الكتاب من المكتبة";
+    del.onclick=async()=>{
+      if(!confirm(`حذف «${m.title}» نهائيًا؟`)) return;
+      await DB.del("meta",m.id); await DB.del("texts",m.id).catch(()=>{}); await DB.del("files",m.id).catch(()=>{});
+      if(S.id===m.id) S.id=null;
+      $("sheet").classList.add("hidden"); renderShelf();
+    };
+    box.append(save,del);
+  });
+}
+
+/* دمج الأجزاء النصية في كتاب واحد */
+async function mergeGroup(name, arr){
+  if(!confirm(`دمج ${arr.length} أجزاء في كتاب واحد باسم «${name}»؟`)) return;
+  try{
+    let raw="", toc=[], words=0;
+    for(const m of arr){
+      const t=await DB.get("texts",m.id);
+      if(!t || !t.raw) continue;
+      toc.push({t:(m.vol?`الجزء ${m.vol}: `:"")+m.title, d:0, k:raw.split(/\s+/).filter(Boolean).length});
+      raw += (raw ? "\n\n" : "") + t.raw;
+    }
+    if(!raw){ alert("لا يوجد نص للدمج."); return; }
+    words=raw.split(/\s+/).filter(Boolean).length;
+    const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    const tokensLen=words+(raw.match(/\n\s*\n/g)||[]).length;
+    await DB.put("texts",{id, raw});
+    await DB.put("meta",{id, title:name, kind:"txt", words, len:tokensLen, pos:0, pageStart:0,
+      added:Date.now(), opened:Date.now(), toc, cat:arr[0].cat||""});
+    if(confirm("تم الدمج. هل تحذف الأجزاء المنفصلة؟")){
+      for(const m of arr){ await DB.del("meta",m.id); await DB.del("texts",m.id).catch(()=>{}); }
+    }
+    libOpen[name]=false; renderShelf();
+    alert("تم إنشاء الكتاب المدمج في مكتبتك.");
+  }catch(e){ alert("تعذّر الدمج."); }
+}
+
+/* الانتقال إلى الجزء التالي عند انتهاء الجزء الحالي */
+async function nextVolume(){
+  if(!S.cur || !groupOf(S.cur)) return false;
+  let list=[]; try{ list=await DB.all("meta"); }catch(e){ return false; }
+  const sib=list.filter(m=>groupOf(m)===groupOf(S.cur)).sort((a,b)=>(a.vol||0)-(b.vol||0));
+  const i=sib.findIndex(m=>m.id===S.cur.id);
+  const nx=sib[i+1];
+  if(!nx) return false;
+  if(!confirm(`انتهى هذا الجزء. الانتقال إلى «${nx.title}»؟`)) return false;
+  await endSession(); await saveProgress(true);
+  openSaved(nx.id);
+  return true;
+}
+
 async function openSaved(id){
   const meta=await DB.get("meta",id);
   if(meta && meta.kind==="scan"){
@@ -516,7 +798,7 @@ async function openSaved(id){
   const [m,t]=await Promise.all([DB.get("meta",id), DB.get("texts",id)]);
   if(!m||!t){ msg("تعذّر العثور على الكتاب."); return; }
   S.id=id; S.raw=t.raw; S.kind=m.kind; S.title=m.title; prepare();
-  S.pos=Math.min(m.pos||0, S.tokens.length-1); S.resume=m.pageStart; S.stack=[];
+  S.toc=m.toc||null; S.pos=Math.min(m.pos||0, S.tokens.length-1); S.resume=m.pageStart; S.stack=[]; applyBookPrefs(m);
   startReading();
 }
 let lastSave=0;
@@ -529,23 +811,27 @@ function saveProgress(force){
   }
   return DB.patch(S.id,{pos:S.pos, pageStart:S.mode==="rsvp"?paraStart(S.pos):S.pageStart, len:S.tokens.length, opened:now}).catch(()=>{});
 }
-addEventListener("visibilitychange",()=>{ if(document.hidden){ pause(); saveProgress(true); } });
-addEventListener("pagehide",()=>saveProgress(true));
+addEventListener("visibilitychange",()=>{
+  const reading=!$("reader").classList.contains("hidden");
+  if(document.hidden){ pause(); saveProgress(true); if(reading) endSession(); }
+  else if(reading) startSession();
+});
+addEventListener("pagehide",()=>{ saveProgress(true); endSession(); });
 
-async function setBook(raw, kind, title){
+async function setBook(raw, kind, title, toc){
   S.raw=raw; S.kind=kind; S.title=title; prepare();
   const n = wordCount();
   if(!n){ msg("لم يُعثر على نص. إن كان الكتاب صورًا ممسوحة ضوئيًا فلا يمكن قراءته هنا."); return; }
   msg("");
-  S.pos=0; S.stack=[]; S.resume=undefined;
+  S.pos=0; S.stack=[]; S.resume=undefined; S.toc=toc||[];
   // إن كان الكتاب محفوظًا من قبل نكمل من موضعه
   try{
     const old=(await DB.all("meta")).find(m=>m.title===title && m.words===n);
-    if(old){ S.id=old.id; S.pos=Math.min(old.pos||0,S.tokens.length-1); S.resume=old.pageStart; }
+    if(old){ S.id=old.id; if(toc && toc.length && !(old.toc||[]).length) DB.patch(old.id,{toc}).catch(()=>{}); S.pos=Math.min(old.pos||0,S.tokens.length-1); S.resume=old.pageStart; }
     else {
       S.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
       await DB.put("texts",{id:S.id, raw});
-      await DB.put("meta",{id:S.id,title,kind,words:n,len:S.tokens.length,pos:0,pageStart:0,added:Date.now()});
+      await DB.put("meta",{id:S.id,title,kind,words:n,len:S.tokens.length,pos:0,pageStart:0,added:Date.now(),toc:toc||[]});
     }
     renderShelf();
   }catch(e){ S.id=null; msg("لم يُحفظ الكتاب في المكتبة، لكن يمكنك قراءته الآن."); }
@@ -588,122 +874,203 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) keepAwak
 /* ───── عرض صفحات PDF كما هي مع الأعمدة الثلاثة والتظليل ───── */
 const SC = {wpl:10, doc:null, page:1, pages:0, units:[], a:null, unit:0, cache:new Map(), resumeUnit:0, words:[]};
 
+function scanPixels(cv){
+  const W=cv.width, H=cv.height;
+  const px=cv.getContext("2d",{willReadFrequently:true}).getImageData(0,0,W,H).data;
+  const lum=new Uint8Array(W*H), hist=new Float64Array(256);
+  for(let i=0,k=0;k<W*H;i+=4,k++){ const l=(px[i]*77+px[i+1]*151+px[i+2]*28)>>8; lum[k]=l; hist[l]++; }
+  let tot=W*H, sumAll=0; for(let t=0;t<256;t++) sumAll+=t*hist[t];
+  let wB=0,sB=0,best=0,thr=128;
+  for(let t=0;t<256;t++){ wB+=hist[t]; if(!wB) continue; const wF=tot-wB; if(!wF) break;
+    sB+=t*hist[t]; const mB=sB/wB, mF=(sumAll-sB)/wF, v=wB*wF*(mB-mF)*(mB-mF); if(v>best){best=v;thr=t;} }
+  thr=Math.min(thr,190);
+  const dark=new Uint8Array(W*H), cols=new Uint32Array(W);
+  for(let k=0;k<W*H;k++) if(lum[k]<thr){ dark[k]=1; cols[k%W]++; }
+  return {W,H,dark,cols};
+}
+// تقدير ميلان الصفحة بمقارنة حدّة الأسطر عند زوايا مختلفة
+function estimateSkew(dark,W,H){
+  const sx=Math.max(1,Math.floor(W/300)), sy=Math.max(1,Math.floor(H/500));
+  const score=deg=>{
+    const t=Math.tan(deg*Math.PI/180), off=Math.ceil(Math.abs(t)*W/sy/2)+2;
+    const rows=new Float64Array(Math.ceil(H/sy)+2*off+2);
+    for(let y=0;y<H;y+=sy){ const b=y*W;
+      for(let x=0;x<W;x+=sx) if(dark[b+x]){ const r=Math.round((y+(x-W/2)*t)/sy)+off; if(r>=0&&r<rows.length) rows[r]++; } }
+    let v=0; for(let i=0;i<rows.length;i++) v+=rows[i]*rows[i];
+    return v;
+  };
+  let bd=0, bv=-1;
+  for(let d=-4; d<=4.001; d+=0.5){ const v=score(d); if(v>bv){ bv=v; bd=d; } }
+  for(let d=bd-0.4; d<=bd+0.401; d+=0.2){ const v=score(d); if(v>bv){ bv=v; bd=d; } }
+  return bd;
+}
+function rotateCanvas(cv, deg){
+  const W=cv.width, H=cv.height;
+  const out=document.createElement("canvas"); out.width=W; out.height=H;
+  const c=out.getContext("2d",{willReadFrequently:true});
+  c.fillStyle="#fff"; c.fillRect(0,0,W,H);
+  c.translate(W/2,H/2); c.rotate(-deg*Math.PI/180); c.drawImage(cv,-W/2,-H/2);
+  cv.width=cv.height=0;
+  return out;
+}
+function pitchOf(prof, a, b, H){
+  const TH=b-a+1; if(TH<40) return 0;
+  const sm=new Float64Array(TH), r1=Math.max(1,Math.round(H*.002));
+  for(let i=0;i<TH;i++){ let s=0,c=0; for(let j=-r1;j<=r1;j++){ const y=a+i+j; if(y>=a&&y<=b){ s+=prof[y]; c++; } } sm[i]=s/c; }
+  const wma=Math.max(8,Math.round(H*.07)), det=new Float64Array(TH);
+  let acc=0; const pre=new Float64Array(TH+1);
+  for(let i=0;i<TH;i++){ acc+=sm[i]; pre[i+1]=acc; }
+  for(let i=0;i<TH;i++){ const x=Math.max(0,i-wma), y=Math.min(TH,i+wma+1); det[i]=sm[i]-(pre[y]-pre[x])/(y-x); }
+  const minL=Math.max(6,Math.round(H*.012)), maxL=Math.min(Math.round(H*.12), Math.floor(TH/2));
+  if(maxL<=minL) return 0;
+  const cor=new Float64Array(maxL+2);
+  for(let L=minL-1;L<=maxL+1;L++){ let c=0,n=0; for(let i=0;i+L<TH;i++){ c+=det[i]*det[i+L]; n++; } cor[L]=n?c/n:0; }
+  const peaks=[];
+  for(let L=minL;L<=maxL;L++) if(cor[L]>0 && cor[L]>cor[L-1] && cor[L]>=cor[L+1]) peaks.push(L);
+  if(!peaks.length) return 0;
+  const top=Math.max(...peaks.map(L=>cor[L]));
+  return peaks.find(L=>cor[L]>=top*.6) || 0;
+}
+
 async function analyzePage(num){
   if(SC.cache.has(num)) return SC.cache.get(num);
   const job=(async()=>{
     const pg=await SC.doc.getPage(num);
     const v0=pg.getViewport({scale:1});
     const vp=pg.getViewport({scale:Math.min(3, 1300/v0.width)});
-    const full=document.createElement("canvas");
-    const W=full.width=Math.floor(vp.width), H=full.height=Math.floor(vp.height);
+    let full=document.createElement("canvas");
+    full.width=Math.floor(vp.width); full.height=Math.floor(vp.height);
     const ctx=full.getContext("2d",{willReadFrequently:true});
-    ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="#fff"; ctx.fillRect(0,0,full.width,full.height);
     await pg.render({canvasContext:ctx, viewport:vp}).promise;
-    const px=ctx.getImageData(0,0,W,H).data;
-    // عتبة الحبر بطريقة Otsu لتناسب الصفحات الباهتة والمصفرّة
-    const lum=new Uint8Array(W*H), hist=new Float64Array(256);
-    for(let i=0,k=0;k<W*H;i+=4,k++){ const l=(px[i]*77+px[i+1]*151+px[i+2]*28)>>8; lum[k]=l; hist[l]++; }
-    let tot=W*H, sumAll=0; for(let t=0;t<256;t++) sumAll+=t*hist[t];
-    let wB=0,sB=0,best=0,thr=128;
-    for(let t=0;t<256;t++){ wB+=hist[t]; if(!wB) continue; const wF=tot-wB; if(!wF) break;
-      sB+=t*hist[t]; const mB=sB/wB, mF=(sumAll-sB)/wF, v=wB*wF*(mB-mF)*(mB-mF); if(v>best){best=v;thr=t;} }
-    thr=Math.min(thr,190);
-    const dark=new Uint8Array(W*H), cols=new Uint32Array(W);
-    for(let k=0;k<W*H;k++) if(lum[k]<thr){ dark[k]=1; cols[k%W]++; }
-    // حدود النص مع تجاهل الحواف والأشرطة السوداء
+
+    let {W,H,dark,cols}=scanPixels(full);
+    let skew=0;
+    if(prefs.deskew!==0){
+      skew=estimateSkew(dark,W,H);
+      if(Math.abs(skew)>=0.3){ full=rotateCanvas(full,skew); ({W,H,dark,cols}=scanPixels(full)); }
+      else skew=0;
+    }
     const mx=Math.floor(W*.025), my=Math.floor(H*.02);
     const colOk=x=>cols[x]>H*.004 && cols[x]<H*.55;
-    let x0=W,x1=0; for(let x=mx;x<W-mx;x++) if(colOk(x)){ if(x<x0)x0=x; x1=x; }
-    if(x1-x0<W*.2) return finish(full,null);
-    const CW=x1-x0+1, prof=new Float64Array(H);
-    for(let y=my;y<H-my;y++){ let s=0; const b=y*W; for(let x=x0;x<=x1;x++) s+=dark[b+x]; prof[y]= s<CW*.6 ? s : 0; }
-    // تباعد الأسطر: ارتباط ذاتي على ملف أفقي منزوع الاتجاه داخل كتلة النص فقط
-    let ty0=my, ty1=H-my-1;
+    let x0=W, x1=0;
+    for(let x=mx;x<W-mx;x++) if(colOk(x)){ if(x<x0)x0=x; x1=x; }
+    if(x1-x0<W*.2) return finish(full,null,skew);
+
+    // حدود كتلة النص عموديًا
+    const profOf=(xa,xb)=>{ const p=new Float64Array(H), w=xb-xa+1;
+      for(let y=my;y<H-my;y++){ let s=0; const b=y*W; for(let x=xa;x<=xb;x++) s+=dark[b+x]; p[y]= s<w*.6 ? s : 0; }
+      return p; };
+    const prof=profOf(x0,x1);
+    let ty0=my, ty1=H-my-1, CW=x1-x0+1;
     while(ty0<ty1 && prof[ty0]<CW*.01) ty0++;
     while(ty1>ty0 && prof[ty1]<CW*.01) ty1--;
-    const TH=ty1-ty0+1;
-    const sm=new Float64Array(TH);
-    const r1=Math.max(1,Math.round(H*.002));
-    for(let i=0;i<TH;i++){ let s=0,c=0; for(let j=-r1;j<=r1;j++){ const y=ty0+i+j; if(y>=ty0&&y<=ty1){ s+=prof[y]; c++; } } sm[i]=s/c; }
-    const wma=Math.max(8,Math.round(H*.07)), det=new Float64Array(TH);
-    { let acc=0; const pre=new Float64Array(TH+1); for(let i=0;i<TH;i++){ acc+=sm[i]; pre[i+1]=acc; }
-      for(let i=0;i<TH;i++){ const a=Math.max(0,i-wma), b=Math.min(TH,i+wma+1); det[i]=sm[i]-(pre[b]-pre[a])/(b-a); } }
-    let pitch=0;
-    const minL=Math.max(6,Math.round(H*.012)), maxL=Math.min(Math.round(H*.12), Math.floor(TH/2));
-    const cor=new Float64Array(maxL+2);
-    for(let L=minL-1;L<=maxL+1;L++){ let c=0,n=0; for(let i=0;i+L<TH;i++){ c+=det[i]*det[i+L]; n++; } cor[L]=n?c/n:0; }
-    const peaks=[];
-    for(let L=minL;L<=maxL;L++) if(cor[L]>0 && cor[L]>cor[L-1] && cor[L]>=cor[L+1]) peaks.push(L);
-    if(peaks.length){
-      const top=Math.max(...peaks.map(L=>cor[L]));
-      pitch = peaks.find(L=>cor[L]>=top*.6);
-    }
-    // أشرطة الحبر
-    const rowOk=y=>prof[y]>Math.max(3,CW*.006);
-    let bands=[], st=-1;
-    for(let y=my;y<=H-my;y++){
-      const ok=y<H-my && rowOk(y);
-      if(ok && st<0) st=y;
-      if(!ok && st>=0){ if(y-st>=2) bands.push({y0:st,y1:y-1}); st=-1; }
-    }
-    if(!bands.length) return finish(full,null);
-    if(!pitch){ const hs=bands.map(b=>b.y1-b.y0+1).filter(h=>h<H*.08).sort((a,b)=>a-b); pitch=hs.length ? hs[Math.floor(hs.length*.6)]*1.6 : H*.04; }
-    // دمج النقاط والتشكيل مع أسطرها
-    const merged=[];
-    for(const b of bands){
-      const p=merged[merged.length-1];
-      if(p && b.y1-p.y0 < pitch*.9){ p.y1=b.y1; continue; }
-      merged.push({...b});
-    }
-    // تقسيم الأشرطة الطويلة (أسطر ملتصقة بسبب الميلان)
-    const lines=[];
-    for(const b of merged){
-      const h=b.y1-b.y0+1;
-      let ink=0; for(let y=b.y0;y<=b.y1;y++) ink+=prof[y];
-      if(ink < CW*h*.015 && h<pitch*.5) continue;            // شوائب
-      const n=Math.max(1, Math.round(h/pitch));
-      if(n>1 && h>pitch*1.45){
-        // نقسم عند أضعف الصفوف قرب مواضع القسمة المتوقعة
-        let prev=b.y0;
-        for(let k=1;k<n;k++){
-          const c=Math.round(b.y0+h*k/n), r=Math.round(pitch*.35);
-          let cut=c, mn=1e9; for(let y=c-r;y<=c+r;y++) if(prof[y]<mn){ mn=prof[y]; cut=y; }
-          lines.push({y0:prev,y1:cut}); prev=cut+1;
-        }
-        lines.push({y0:prev,y1:b.y1});
-      } else if(h>=pitch*.25) lines.push(b);
-    }
-    const third=CW/3, zones=[], lineUnits=[];
-    lines.forEach((b,li)=>{
-      const ink=new Uint32Array(CW);
-      for(let y=b.y0;y<=b.y1;y++){ const base=y*W+x0; for(let i=0;i<CW;i++) ink[i]+=dark[base+i]; }
-      const need=Math.max(1,Math.min(b.y1-b.y0,pitch)*.06);
-      let a=-1,e=-1; for(let i=0;i<CW;i++) if(ink[i]>=need){ if(a<0)a=i; e=i; }
-      if(a<0 || e-a<CW*.03) return;
-      lineUnits.push({x0:a+x0, x1:e+x0, y0:b.y0, y1:b.y1, frac:(e-a)/CW, line:li});
-      for(let k=0;k<3;k++){                                   // k=0 الثلث الأيمن
-        const zs=Math.max(a, Math.round(CW-third*(k+1))), ze=Math.min(e, Math.round(CW-third*k)-1);
-        if(ze-zs<third*.12) continue;
-        zones.push({x0:zs+x0, x1:ze+x0, y0:b.y0, y1:b.y1, frac:(ze-zs)/CW, line:li});
+
+    // كشف العمودين: فجوة عمودية خالية من الحبر في وسط الصفحة
+    const inkCol=new Uint32Array(CW);
+    for(let y=ty0;y<=ty1;y++){ const b=y*W+x0; for(let i=0;i<CW;i++) inkCol[i]+=dark[b+i]; }
+    let ranges=[[x0,x1]];
+    if(prefs.cols2!==0){
+      const lim=Math.max(3,(ty1-ty0)*.012);
+      let run=0, bestRun=0, bestEnd=-1;
+      for(let i=Math.round(CW*.3); i<=Math.round(CW*.7); i++){
+        if(inkCol[i]<=lim){ run++; if(run>bestRun){ bestRun=run; bestEnd=i; } } else run=0;
       }
+      if(bestRun>CW*.05){
+        const gs=x0+bestEnd-bestRun+1, ge=x0+bestEnd;
+        if(gs-x0>CW*.25 && x1-ge>CW*.25) ranges=[[ge+1,x1],[x0,gs-1]];   // العمود الأيمن أولًا
+      }
+    }
+
+    const zones=[], lineUnits=[], guides=[];
+    ranges.forEach(([xa,xb])=>{
+      const RW=xb-xa+1, rp = ranges.length>1 ? profOf(xa,xb) : prof;
+      let a0=my, a1=H-my-1;
+      while(a0<a1 && rp[a0]<RW*.01) a0++;
+      while(a1>a0 && rp[a1]<RW*.01) a1--;
+      let pitch=pitchOf(rp,a0,a1,H);
+      const rowOk=y=>rp[y]>Math.max(3,RW*.006);
+      const bands=[]; let st=-1;
+      for(let y=my;y<=H-my;y++){
+        const ok=y<H-my && rowOk(y);
+        if(ok && st<0) st=y;
+        if(!ok && st>=0){ if(y-st>=2) bands.push({y0:st,y1:y-1}); st=-1; }
+      }
+      if(!bands.length) return;
+      if(!pitch){ const hs=bands.map(b=>b.y1-b.y0+1).filter(h=>h<H*.08).sort((p,q)=>p-q);
+        pitch=hs.length ? hs[Math.floor(hs.length*.6)]*1.6 : H*.04; }
+      const merged=[];
+      for(const b of bands){
+        const p=merged[merged.length-1];
+        if(p && b.y1-p.y0 < pitch*.9){ p.y1=b.y1; continue; }
+        merged.push({...b});
+      }
+      const lines=[];
+      for(const b of merged){
+        const h=b.y1-b.y0+1;
+        let ink=0; for(let y=b.y0;y<=b.y1;y++) ink+=rp[y];
+        if(ink < RW*h*.015 && h<pitch*.5) continue;
+        const n=Math.max(1, Math.round(h/pitch));
+        if(n>1 && h>pitch*1.45){
+          let prev=b.y0;
+          for(let k=1;k<n;k++){
+            const c=Math.round(b.y0+h*k/n), r=Math.round(pitch*.35);
+            let cut=c, mn=1e9; for(let y=c-r;y<=c+r;y++) if(rp[y]<mn){ mn=rp[y]; cut=y; }
+            lines.push({y0:prev,y1:cut}); prev=cut+1;
+          }
+          lines.push({y0:prev,y1:b.y1});
+        } else if(h>=pitch*.25) lines.push(b);
+      }
+      if(!lines.length) return;
+      // الحواشي: خط فاصل رفيع أو أسطر أصغر في أسفل العمود
+      const hts=lines.map(b=>b.y1-b.y0).sort((p,q)=>p-q), hMed=hts[Math.floor(hts.length/2)]||pitch;
+      let footFrom=Infinity, small=0;
+      for(let i=Math.floor(lines.length*.55); i<lines.length; i++){
+        const b=lines[i], h=b.y1-b.y0;
+        let wide=0; for(let y=b.y0;y<=b.y1;y++) wide=Math.max(wide, rp[y]);
+        if(h<=pitch*.32 && wide>RW*.25){ footFrom=i+1; break; }          // خط فاصل رفيع
+        // أو ثلاثة أسطر متتالية بخط أصغر في أسفل العمود
+        if(h < hMed*.7 && b.y0 > a0+(a1-a0)*.66){ if(++small>=3){ footFrom=i-2; break; } } else small=0;
+      }
+      const third=RW/3;
+      guides.push(xa+third, xa+2*third);
+      lines.forEach((b,li)=>{
+        const ink2=new Uint32Array(RW);
+        for(let y=b.y0;y<=b.y1;y++){ const base=y*W+xa; for(let i=0;i<RW;i++) ink2[i]+=dark[base+i]; }
+        const need=Math.max(1,Math.min(b.y1-b.y0,pitch)*.06);
+        let a=-1,e=-1; for(let i=0;i<RW;i++) if(ink2[i]>=need){ if(a<0)a=i; e=i; }
+        if(a<0 || e-a<RW*.03) return;
+        const foot = li>=footFrom;
+        const key=lineUnits.length;
+        lineUnits.push({x0:a+xa, x1:e+xa, y0:b.y0, y1:b.y1, frac:(e-a)/RW, line:key, foot});
+        for(let k=0;k<3;k++){
+          const zs=Math.max(a, Math.round(RW-third*(k+1))), ze=Math.min(e, Math.round(RW-third*k)-1);
+          if(ze-zs<third*.12) continue;
+          zones.push({x0:zs+xa, x1:ze+xa, y0:b.y0, y1:b.y1, frac:(ze-zs)/RW, line:key, foot});
+        }
+      });
     });
-    return finish(full,{x0,x1,y0:lines.length?lines[0].y0:0,y1:lines.length?lines[lines.length-1].y1:H,zones,lineUnits});
+    if(!lineUnits.length) return finish(full,null,skew);
+    const ys=lineUnits.map(u=>u.y0), ye=lineUnits.map(u=>u.y1);
+    return finish(full,{x0,x1,y0:Math.min(...ys),y1:Math.max(...ye),zones,lineUnits,guides,cols:ranges.length},skew);
   })();
   SC.cache.set(num, job);
   for(const k of [...SC.cache.keys()]) if(Math.abs(k-num)>2) SC.cache.delete(k);
   return job;
 
-  function finish(full, r){
+  function finish(full, r, skew){
     const W=full.width, H=full.height;
-    if(!r) return {canvas:full, cw:W, ch:H, gx0:0, gx1:W, zones:[], lineUnits:[], lines:0};
+    if(!r) return {canvas:full, cw:W, ch:H, guides:[], zones:[], lineUnits:[], lines:0, count:0, skew:skew||0};
     const pad=Math.round(W*.025);
     const cx0=Math.max(0,r.x0-pad), cx1=Math.min(W,r.x1+pad), cy0=Math.max(0,r.y0-pad*2), cy1=Math.min(H,r.y1+pad*2);
     const cv=document.createElement("canvas"); cv.width=cx1-cx0; cv.height=cy1-cy0;
     cv.getContext("2d").drawImage(full,cx0,cy0,cv.width,cv.height,0,0,cv.width,cv.height);
     full.width=full.height=0;
     const sh=u=>({...u, x0:u.x0-cx0, x1:u.x1-cx0, y0:u.y0-cy0, y1:u.y1-cy0});
-    const lines=r.lineUnits.reduce((s,u)=>s+u.frac,0);
-    return {canvas:cv, cw:cv.width, ch:cv.height, gx0:r.x0-cx0, gx1:r.x1-cx0, zones:r.zones.map(sh), lineUnits:r.lineUnits.map(sh), lines, count:r.lineUnits.length};
+    const body=r.lineUnits.filter(u=>!u.foot);
+    return {canvas:cv, cw:cv.width, ch:cv.height, guides:r.guides.map(g=>g-cx0),
+      zones:r.zones.map(sh), lineUnits:r.lineUnits.map(sh),
+      lines:body.reduce((s,u)=>s+u.frac,0), count:body.length, cols:r.cols, skew:skew||0};
   }
 }
 
@@ -717,19 +1084,32 @@ async function scanRender(num, unit){
   const w=$("scanWrap");
   w.querySelector("canvas")?.remove();
   w.prepend(a.canvas);
-  const p=v=>(v/a.cw*100)+"%";
-  const g=$("sguides").children, gw=a.gx1-a.gx0;
-  g[0].style.left=p(a.gx0+gw/3); g[1].style.left=p(a.gx0+2*gw/3);
+  a.canvas.style.filter=scanFx();
+  const g=$("sguides"); g.innerHTML="";
+  (a.guides||[]).forEach(x=>{ const i=document.createElement("i"); i.style.left=(x/a.cw*100)+"%"; g.appendChild(i); });
   $("scanMsg").textContent = a.zones.length ? "" : "لم يُعثر على أسطر في هذه الصفحة.";
+  SC.info = (a.cols>1?"عمودان · ":"") + (Math.abs(a.skew)>=0.3?`تقويم ${a.skew.toFixed(1)}° · `:"");
   pickScanUnits();
   SC.unit=Math.min(unit||0, Math.max(0,SC.units.length-1));
   $("hlbox").classList.add("hidden");
   $("scan").scrollTo({top:0});
-  SC.shownAt=performance.now();
+  SC.shownAt=performance.now(); SC.pass=1;
   updateInfo();
   if(num<SC.pages) setTimeout(()=>analyzePage(num+1),50);
 }
-function pickScanUnits(){ SC.units = !SC.a ? [] : S.mode==="line" ? SC.a.lineUnits : SC.a.zones; }
+const burstOn=()=>!!prefs.burst;
+function pickScanUnits(){
+  if(!SC.a){ SC.units=[]; return; }
+  const src = S.mode==="line" ? SC.a.lineUnits : SC.a.zones;
+  SC.units = prefs.foot===0 ? src : src.filter(u=>!u.foot);
+  if(!SC.units.length) SC.units=src;
+}
+function scanFx(){
+  const t=document.body.className.replace("fs","").trim();
+  const sharp = prefs.sharp===0 ? "" : "contrast(1.35) brightness(1.04) ";
+  return t.includes("dark") ? sharp+"invert(.88) hue-rotate(180deg)"
+       : t.includes("sepia") ? sharp+"sepia(.45) brightness(.97)" : sharp.trim();
+}
 function scanLine(){ const u=SC.units[Math.max(0,SC.unit-1)] || SC.units[SC.unit]; return u ? u.line : 0; }
 
 function hlScan(u, mark){
@@ -753,21 +1133,24 @@ function hlScan(u, mark){
 function scanTick(){
   if(!S.playing) return;
   if(SC.unit>=SC.units.length){
+    if(burstOn() && SC.pass!==2){ SC.pass=2; SC.unit=0; $("passTag").textContent="قراءة متأنية"; S.timer=setTimeout(tick,400); return; }
     if(SC.page>=SC.pages) return finished();
-    SC.page++;
-    scanRender(SC.page,0).then(()=>{ if(S.playing) S.timer=setTimeout(tick, 350); });
+    SC.page++; SC.pass=1; $("passTag").textContent=burstOn()?"مرور سريع":"";
+    scanRender(SC.page,0).then(()=>{ if(S.playing && !pageTurned()) S.timer=setTimeout(tick, 350); });
     return;
   }
   const u=SC.units[SC.unit++];
   hlScan(u);
-  S.timer=setTimeout(tick, Math.max(250, u.frac*SC.wpl*60000/S.wpm));
+  const fast=burstOn() && SC.pass!==2;
+  if(!fast) addWords(u.frac*SC.wpl);
+  S.timer=setTimeout(tick, Math.max(fast?120:250, u.frac*SC.wpl*60000/(S.wpm*(fast?1.8:1))));
   updateInfo();
 }
 
 async function openScan(m, doc){
   S.id = m.unsaved ? null : m.id; S.kind="scan"; S.title=m.title;
   SC.doc=doc; SC.pages=doc.numPages; SC.page=Math.min(m.scanPage||1, SC.pages);
-  SC.resumeUnit=m.scanUnit||0; SC.wpl=m.wpl||10; $("wplV").textContent=SC.wpl; SC.cache.clear(); SC.words=[]; SC.a=null;
+  S.toc=m.toc||null; SC.resumeUnit=m.scanUnit||0; SC.wpl=m.wpl||10; $("wplV").textContent=SC.wpl; applyBookPrefs(m); SC.cache.clear(); SC.words=[]; SC.a=null;
   startReading();
 }
 async function newScanBook(doc, file, name){
@@ -775,7 +1158,7 @@ async function newScanBook(doc, file, name){
   try{ m=(await DB.all("meta")).find(x=>x.kind==="scan" && x.title===name); }catch(e){}
   if(!m){
     m={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6), title:name, kind:"scan",
-       words:0, len:doc.numPages, pages:doc.numPages, pos:0, pageStart:0, scanPage:1, scanUnit:0, added:Date.now()};
+       words:0, len:doc.numPages, pages:doc.numPages, pos:0, pageStart:0, scanPage:1, scanUnit:0, added:Date.now(), toc:await pdfToc(doc)};
     try{ await DB.put("files",{id:m.id, blob:file}); await DB.put("meta",m); }
     catch(e){ m.unsaved=true; msg("لم يُحفظ الكتاب في المكتبة لأن المساحة غير كافية، لكن يمكنك قراءته الآن."); }
   }
@@ -796,11 +1179,457 @@ $("scanWrap").addEventListener("click", e=>{
   pause(); SC.unit=best; hlScan(SC.units[best], true); saveProgress(true); updateInfo();
 });
 
+/* ───── الإحصائيات واختبارات الفهم ───── */
+const STOP=new Set("في من على إلى الى عن أن ان إن لا ما لم لن هو هي هم هذا هذه ذلك تلك التي الذي الذين كان كانت قد ثم أو او بل كل بعض بين عند مع حتى إذا اذا لقد وقد فقد وهو وهي وكان ومن وفي وما ولا وإن وأن فيه فيها منه منها عليه عليها إليه له لها لهم به بها بن ابن أبو أبي قال يقول غير".split(" "));
+const clean1=w=>w.replace(/[^\u0621-\u064A\u0660-\u0669a-zA-Z0-9]/g,"");
+const shuffle=a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pickR=a=>a[Math.floor(Math.random()*a.length)];
+
+const ST={start:0, active:0, playAt:0, words:0, scores:[], pagesSince:0, wordsSince:0, qStart:0, bookId:null, title:""};
+function startSession(){
+  ST.start=Date.now(); ST.active=0; ST.playAt=0; ST.words=0; ST.scores=[];
+  ST.pagesSince=0; ST.wordsSince=0; ST.qStart=S.kind==="scan"?0:S.pos; ST.bookId=S.id; ST.title=S.title;
+}
+function markPlay(){ ST.playAt=performance.now(); }
+function markStop(){ if(ST.playAt){ ST.active+=performance.now()-ST.playAt; ST.playAt=0; } }
+function addWords(n, freeMs){
+  ST.words+=n; ST.wordsSince+=n;
+  if(freeMs) ST.active+=Math.min(freeMs, 5*60000);   // تجاهل فترات الغياب الطويلة
+}
+async function endSession(){
+  markStop();
+  const min=ST.active/60000;
+  if(ST.start && ST.words>=20 && min>=0.25){
+    const rec={book:ST.bookId, title:ST.title, date:ST.start, minutes:+min.toFixed(2), words:Math.round(ST.words),
+      wpm:Math.round(ST.words/min), comp: ST.scores.length ? Math.round(ST.scores.reduce((a,b)=>a+b,0)/ST.scores.length) : null,
+      mode:S.mode};
+    try{ await DB.add("sessions",rec); }catch(e){}
+  }
+  ST.start=0;
+}
+
+/* متى يحين الاختبار */
+function quizEvery(){ return prefs.quiz===undefined ? 5 : prefs.quiz; }
+function pageTurned(){                // يعيد true إن توقفت القراءة لعرض اختبار
+  const n=quizEvery(); if(!n) return false;
+  ST.pagesSince++;
+  if(ST.pagesSince>n){ ST.pagesSince=1; }
+  if(ST.pagesSince===n){ ST.pagesSince=0; showQuiz(); return true; }
+  return false;
+}
+function rsvpWordsCheck(){
+  const n=quizEvery(); if(!n) return false;
+  if(ST.wordsSince>=n*220){ showQuiz(); return true; }
+  return false;
+}
+
+/* بناء الأسئلة من النص المقروء */
+function sentencesIn(a,b){
+  const T=S.tokens, out=[]; let cur=[], st=a;
+  for(let i=a;i<b;i++){
+    if(T[i]==="\n"){ if(cur.length) out.push({w:cur,i:st}); cur=[]; st=i+1; continue; }
+    cur.push(T[i]);
+    if(/[.!؟?:]$/.test(T[i]) || cur.length>=28){ out.push({w:cur,i:st}); cur=[]; st=i+1; }
+  }
+  if(cur.length) out.push({w:cur,i:st});
+  return out.filter(s=>s.w.length>=6);
+}
+function phraseFrom(s, len){
+  const k=Math.floor(Math.random()*Math.max(1,s.w.length-len+1));
+  return s.w.slice(k,k+len).join(" ");
+}
+function buildTextQuiz(){
+  const a=ST.qStart, b=Math.max(S.pos, a);
+  const sents=sentencesIn(a,b);
+  if(sents.length<3) return null;
+  const qs=[];
+  const words=[...new Set(S.tokens.slice(a,b).map(clean1).filter(w=>w.length>=4 && !STOP.has(w)))];
+  // ١) إكمال الفراغ
+  const cand=shuffle(sents.slice());
+  for(const s of cand){
+    const idx=s.w.map((w,i)=>[clean1(w),i]).filter(([w])=>w.length>=4 && !STOP.has(w));
+    if(!idx.length || words.length<6) continue;
+    const [ans,i]=pickR(idx);
+    const opts=shuffle(words.filter(w=>w!==ans && Math.abs(w.length-ans.length)<=2)).slice(0,3);
+    if(opts.length<3) continue;
+    const text=s.w.map((w,j)=>j===i?"_____":w).join(" ");
+    qs.push({q:"أكمل الفراغ بالكلمة التي وردت في النص:", ctx:text, opts:shuffle([ans,...opts]), ans});
+    break;
+  }
+  // ٢) هل وردت العبارة؟ نأخذ البدائل من جزء لم يُقرأ بعد أو بعيد
+  const far = S.tokens.length-b>3000 ? sentencesIn(b+1500, Math.min(S.tokens.length,b+6000))
+            : a>3000 ? sentencesIn(Math.max(0,a-6000), a-1500) : [];
+  if(far.length>=3){
+    const ans=phraseFrom(pickR(sents),6);
+    const opts=shuffle(far.slice()).slice(0,3).map(s=>phraseFrom(s,6));
+    qs.push({q:"أيّ هذه العبارات وردت فيما قرأته الآن؟", opts:shuffle([ans,...opts]), ans});
+  }
+  // ٣) الترتيب
+  const s1=sents[Math.floor(Math.random()*Math.floor(sents.length/2))];
+  const s2=sents[Math.floor(sents.length/2)+Math.floor(Math.random()*Math.ceil(sents.length/2))];
+  if(s1 && s2 && s1!==s2){
+    const p1=phraseFrom(s1,5), p2=phraseFrom(s2,5);
+    qs.push({q:"أيّ العبارتين وردت أولًا؟", opts:shuffle([p1,p2]), ans:p1});
+  }
+  // ٤) فراغ ثانٍ إن نقصت الأسئلة
+  if(qs.length<3){
+    const s=pickR(sents), idx=s.w.map((w,i)=>[clean1(w),i]).filter(([w])=>w.length>=4 && !STOP.has(w));
+    if(idx.length){ const [ans,i]=pickR(idx);
+      const opts=shuffle(words.filter(w=>w!==ans)).slice(0,3);
+      if(opts.length===3) qs.push({q:"أكمل الفراغ:", ctx:s.w.map((w,j)=>j===i?"_____":w).join(" "), opts:shuffle([ans,...opts]), ans}); }
+  }
+  return qs.length ? qs : null;
+}
+
+function showQuiz(){
+  const wasFs=inFs();
+  pause();
+  const box=$("quizBody"); box.innerHTML="";
+  const qs = S.kind==="scan" ? null : buildTextQuiz();
+  ST.wordsSince=0;
+  let done=0, right=0;
+  const finish=()=>{
+    const sc = qs ? Math.round(right/qs.length*100) : null;
+    if(sc!==null) ST.scores.push(sc);
+    let tip="";
+    if(sc!==null && prefs.auto!==0){
+      if(sc>=80){ setWpm(S.wpm+20); tip=` رُفعت السرعة إلى ${S.wpm}.`; }
+      else if(sc<50){ setWpm(S.wpm-40); tip=` خُفّضت السرعة إلى ${S.wpm}.`; }
+    }
+    $("quizScore").textContent = qs ? `النتيجة ${right} من ${qs.length}. ` + (sc>=80?"فهم ممتاز، يمكنك رفع السرعة قليلًا.":sc>=50?"فهم جيد. حافظ على السرعة الحالية.":"الفهم منخفض، جرّب سرعة أقل.") + tip : "";
+    $("quizGo").disabled=false;
+  };
+  if(qs){
+    $("quizTitle").textContent="اختبر فهمك";
+    qs.forEach(q=>{
+      const d=document.createElement("div"); d.className="qq";
+      const p=document.createElement("p"); p.textContent=q.q; d.appendChild(p);
+      if(q.ctx){ const c=document.createElement("blockquote"); c.textContent=q.ctx; d.appendChild(c); }
+      q.opts.forEach(o=>{ const b=document.createElement("button"); b.textContent=o;
+        b.onclick=()=>{ if(d.dataset.done) return; d.dataset.done=1; done++;
+          if(o===q.ans){ right++; b.classList.add("ok"); }
+          else { b.classList.add("no"); [...d.querySelectorAll("button")].find(x=>x.textContent===q.ans).classList.add("ok"); }
+          if(done===qs.length) finish(); };
+        d.appendChild(b); });
+      box.appendChild(d);
+    });
+    $("quizGo").disabled=true;
+  } else {
+    // الكتب المصوّرة: تقييم ذاتي وتلخيص
+    $("quizTitle").textContent="قيّم فهمك";
+    const d=document.createElement("div"); d.className="qq";
+    d.innerHTML='<p>لخّص في ذهنك أو اكتب في سطر ما قرأته، ثم قيّم مدى فهمك:</p><textarea id="qSum" rows="2" placeholder="ملخص قصير (اختياري)"></textarea>';
+    const row=document.createElement("div"); row.className="stars";
+    ["لم أفهم","قليلًا","متوسط","جيد","ممتاز"].forEach((t,i)=>{ const b=document.createElement("button"); b.textContent=t;
+      b.onclick=()=>{ row.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+        ST.scores.pop && row.dataset.v && ST.scores.pop(); row.dataset.v=i; ST.scores.push((i+1)*20);
+        let tip="";
+        if(prefs.auto!==0){ if(i>=3){ setWpm(S.wpm+20); tip=` رُفعت السرعة إلى ${S.wpm}.`; } else if(i<=1){ setWpm(S.wpm-40); tip=` خُفّضت السرعة إلى ${S.wpm}.`; } }
+        $("quizScore").textContent = (i>=3 ? "أحسنت." : i===2 ? "حافظ على السرعة الحالية." : "الفهم ضعيف.") + tip;
+        $("quizGo").disabled=false; };
+      row.appendChild(b); });
+    d.appendChild(row); box.appendChild(d);
+    $("quizGo").disabled=true;
+  }
+  $("quizScore").textContent="";
+  $("quiz").classList.remove("hidden");
+  ST.qStart=S.pos;
+  $("quizGo").onclick=()=>{ $("quiz").classList.add("hidden"); if(S.mode!=="free") play(); };
+  $("quizSkip").onclick=()=>{ $("quiz").classList.add("hidden"); if(S.mode!=="free") play(); };
+}
+
+/* صفحة الإحصائيات */
+const fmtMin=m=> m<1 ? "أقل من دقيقة" : m<60 ? `${Math.round(m)} د` : `${Math.floor(m/60)} س ${Math.round(m%60)} د`;
+async function showStats(){
+  $("lib").classList.add("hidden"); $("stats").classList.remove("hidden"); window.scrollTo(0,0);
+  let all=[]; try{ all=await DB.all("sessions"); }catch(e){}
+  all.sort((a,b)=>a.date-b.date);
+  const now=new Date(), day0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(), week0=day0-6*864e5;
+  const sum=(arr,k)=>arr.reduce((s,x)=>s+(x[k]||0),0);
+  const today=all.filter(x=>x.date>=day0), week=all.filter(x=>x.date>=week0);
+  const last=all.slice(-10), lm=sum(last,"minutes");
+  const avgW = lm ? Math.round(sum(last,"words")/lm) : 0;
+  const withC=all.filter(x=>x.comp!=null).slice(-10);
+  const avgC = withC.length ? Math.round(sum(withC,"comp")/withC.length) : null;
+  const cards=[
+    ["اليوم", fmtMin(sum(today,"minutes")), `${sum(today,"words").toLocaleString("ar")} كلمة`],
+    ["آخر ٧ أيام", fmtMin(sum(week,"minutes")), `${sum(week,"words").toLocaleString("ar")} كلمة`],
+    ["متوسط السرعة", avgW ? `${avgW}` : "—", "كلمة في الدقيقة"],
+    ["متوسط الفهم", avgC!=null ? `${avgC}٪` : "—", avgC!=null && avgW ? `السرعة الفعّالة ${Math.round(avgW*avgC/100)}` : "من الاختبارات"],
+  ];
+  $("statCards").innerHTML="";
+  cards.forEach(([t,v,s])=>{ const d=document.createElement("div"); d.className="sc";
+    d.innerHTML=`<small></small><b></b><small></small>`; d.children[0].textContent=t; d.children[1].textContent=v; d.children[2].textContent=s;
+    $("statCards").appendChild(d); });
+  // مخطط آخر ١٤ جلسة
+  const pts=all.slice(-14), svg=$("statChart");
+  if(!pts.length){ svg.innerHTML=""; $("statEmpty").classList.remove("hidden"); }
+  else{
+    $("statEmpty").classList.add("hidden");
+    const W=340,H=170,pl=34,pb=22,maxW=Math.max(100,...pts.map(p=>p.wpm))*1.15;
+    const bw=Math.min(28,(W-pl-8)/pts.length);
+    let g="";
+    [0,.5,1].forEach(f=>{ const y=H-pb-(H-pb-18)*f; g+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" class="gl"/><text x="${pl-4}" y="${y+4}" class="ax" text-anchor="end">${Math.round(maxW*f)}</text>`; });
+    let line="";
+    pts.forEach((p,i)=>{
+      const x=W-8-(i+1)*bw, h=(H-pb-18)*p.wpm/maxW;          // من اليمين إلى اليسار
+      g+=`<rect x="${x+bw*.18}" y="${H-pb-h}" width="${bw*.64}" height="${h}" rx="3" class="bar"/>`;
+      if(p.comp!=null){ const y=H-pb-(H-pb-18)*p.comp/100; line+=`${line?"L":"M"}${x+bw/2},${y}`; g+=`<circle cx="${x+bw/2}" cy="${y}" r="3.5" class="dot"/>`; }
+      const d=new Date(p.date); g+=`<text x="${x+bw/2}" y="${H-6}" class="ax" text-anchor="middle">${d.getDate()}/${d.getMonth()+1}</text>`;
+    });
+    if(line) g+=`<path d="${line}" class="cl"/>`;
+    svg.innerHTML=g;
+  }
+  // سجل الجلسات
+  const list=$("statList"); list.innerHTML="";
+  all.slice(-30).reverse().forEach(x=>{
+    const d=new Date(x.date), r=document.createElement("div"); r.className="srow";
+    const t=document.createElement("b"); t.textContent=x.title||"";
+    const m=document.createElement("small");
+    m.textContent=`${d.toLocaleDateString("ar")} · ${fmtMin(x.minutes)} · ${x.words.toLocaleString("ar")} كلمة · ${x.wpm} كلمة/د`+(x.comp!=null?` · فهم ${x.comp}٪`:"");
+    r.append(t,m); list.appendChild(r);
+  });
+}
+$("statsBtn").onclick=showStats;
+$("statsBack").onclick=()=>{ $("stats").classList.add("hidden"); $("lib").classList.remove("hidden"); };
+$("statsReset").onclick=async()=>{ if(!confirm("حذف كل الإحصائيات؟")) return; try{ await DB.clear("sessions"); }catch(e){} showStats(); };
+
+/* ───── الفهرس والبحث والعلامات ───── */
+const norm=t=>t.replace(/[\u064B-\u0652\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي");
+const wordsBefore=(raw,off)=>raw.slice(0,off).split(/\s+/).filter(Boolean).length;
+
+async function pdfToc(doc){
+  let o=null; try{ o=await doc.getOutline(); }catch(e){}
+  if(!o || !o.length) return [];
+  const out=[];
+  const walk=async(items,depth)=>{
+    for(const it of items){
+      let dest=it.dest;
+      try{ if(typeof dest==="string") dest=await doc.getDestination(dest); }catch(e){}
+      let page=null;
+      if(Array.isArray(dest) && dest[0]){ try{ page=(await doc.getPageIndex(dest[0]))+1; }catch(e){} }
+      if(page && it.title) out.push({t:it.title.trim().slice(0,90), p:page, d:depth});
+      if(it.items && it.items.length && depth<2) await walk(it.items, depth+1);
+      if(out.length>800) return;
+    }
+  };
+  await walk(o,0);
+  return out;
+}
+
+/* لوح منزلق عام (الفهرس، البحث، العلامات) */
+function openSheet(title, build){
+  $("sheetTitle").textContent=title;
+  const body=$("sheetBody"); body.innerHTML="";
+  build(body);
+  $("sheet").classList.remove("hidden");
+}
+$("sheetClose").onclick=()=>$("sheet").classList.add("hidden");
+function sheetRow(label, sub, onClick, onDel){
+  const r=document.createElement("div"); r.className="srow2";
+  const b=document.createElement("button"); b.className="rowBtn";
+  const t=document.createElement("b"); t.textContent=label;
+  b.appendChild(t);
+  if(sub){ const s2=document.createElement("small"); s2.textContent=sub; b.appendChild(s2); }
+  b.onclick=onClick; r.appendChild(b);
+  if(onDel){ const d=document.createElement("button"); d.className="del"; d.textContent="حذف"; d.onclick=onDel; r.appendChild(d); }
+  return r;
+}
+
+/* الفهرس */
+async function openToc(){
+  $("panel").classList.add("hidden");
+  let toc=S.toc;
+  if(!toc){ const m=S.id ? await DB.get("meta",S.id).catch(()=>null) : null; toc=(m && m.toc) || []; S.toc=toc; }
+  openSheet("فهرس الكتاب", box=>{
+    if(!toc.length){ box.innerHTML='<p class="hint">لا يحتوي هذا الكتاب على فهرس داخلي. استخدم البحث أو الانتقال إلى صفحة من الإعدادات.</p>'; return; }
+    toc.forEach(e=>{
+      const sub = e.p ? `صفحة ${e.p}` : "";
+      const row=sheetRow("— ".repeat(e.d||0)+e.t, sub, ()=>{
+        $("sheet").classList.add("hidden");
+        if(S.kind==="scan" && e.p) jumpToPage(e.p);
+        else if(e.k!=null) jumpToToken(e.k);
+      });
+      box.appendChild(row);
+    });
+  });
+}
+function jumpToPage(p){
+  const was=S.playing; pause();
+  SC.page=Math.max(1,Math.min(SC.pages,p));
+  scanRender(SC.page,0).then(()=>{ if(was) play(); });
+}
+function jumpToToken(k){
+  const was=S.playing; pause();
+  S.pos=Math.max(0,Math.min(S.tokens.length-1,k)); S.stack=[];
+  if(S.mode==="rsvp") rsvpPreview(); else renderPage(paraStart(S.pos));
+  if(was) play(); else updateInfo();
+}
+
+/* البحث داخل الكتاب */
+function runSearch(q){
+  q=norm(q.trim()); if(!q) return [];
+  const T=S.tokens, qs=q.split(/\s+/), out=[];
+  const nt=T.map(norm);
+  for(let i=0;i<nt.length && out.length<60;i++){
+    if(!nt[i].includes(qs[0])) continue;
+    let ok=true;
+    for(let j=1;j<qs.length;j++) if(!(nt[i+j]||"").includes(qs[j])){ ok=false; break; }
+    if(ok) out.push({i, txt:T.slice(Math.max(0,i-6), i+10).join(" ")});
+  }
+  return out;
+}
+function openSearch(){
+  $("panel").classList.add("hidden");
+  openSheet("بحث في الكتاب", box=>{
+    if(S.kind==="scan"){ box.innerHTML='<p class="hint">البحث غير متاح في الكتب المصوّرة، لأن صفحاتها صور. حوّل الكتاب إلى نص لتتمكن من البحث فيه.</p>'; return; }
+    const wrap=document.createElement("div"); wrap.className="searchRow";
+    const inp=document.createElement("input"); inp.type="search"; inp.placeholder="اكتب كلمة أو عبارة";
+    const go=document.createElement("button"); go.textContent="بحث";
+    const res=document.createElement("div");
+    const run=()=>{
+      const r=runSearch(inp.value); res.innerHTML="";
+      if(!r.length){ res.innerHTML='<p class="hint">لا توجد نتائج.</p>'; return; }
+      const h=document.createElement("p"); h.className="hint"; h.textContent=`${r.length} نتيجة`; res.appendChild(h);
+      r.forEach(x=>res.appendChild(sheetRow(x.txt, `عند ${(x.i/S.tokens.length*100).toFixed(1)}٪`, ()=>{ $("sheet").classList.add("hidden"); jumpToToken(x.i); })));
+    };
+    go.onclick=run; inp.onkeydown=e=>{ if(e.key==="Enter") run(); };
+    wrap.append(inp,go); box.append(wrap,res); setTimeout(()=>inp.focus(),100);
+  });
+}
+
+/* العلامات والملاحظات */
+async function addMark(){
+  if(!S.id){ alert("هذا الكتاب غير محفوظ في المكتبة."); return; }
+  const sel=(window.getSelection && String(window.getSelection())||"").trim();
+  let quote=sel, pos=S.pos, page=null;
+  if(S.kind==="scan"){ page=SC.page; quote=`صفحة ${SC.page}`; }
+  else if(!quote) quote=S.tokens.slice(S.pos, S.pos+9).filter(x=>x!=="\n").join(" ");
+  const note=prompt("ملاحظتك على هذا الموضع (اتركها فارغة للاكتفاء بالعلامة):","");
+  if(note===null) return;
+  try{
+    await DB.add("notes",{book:S.id, title:S.title, kind:S.kind, pos, page, quote:quote.slice(0,300), note:(note||"").slice(0,1000), date:Date.now()});
+    $("markBtn").classList.add("saved"); setTimeout(()=>$("markBtn").classList.remove("saved"),900);
+  }catch(e){ alert("تعذّر الحفظ."); }
+}
+async function openNotes(inReader){
+  if(inReader) $("panel").classList.add("hidden");
+  let all=[]; try{ all=await DB.all("notes"); }catch(e){}
+  if(inReader) all=all.filter(n=>n.book===S.id);
+  all.sort((a,b)=>b.date-a.date);
+  const render=box=>{
+    box.innerHTML="";
+    if(!all.length){ box.innerHTML='<p class="hint">لا توجد علامات بعد. أضفها بزر النجمة في أعلى صفحة القراءة، ويمكنك تحديد نص قبل الضغط ليُحفظ معها.</p>'; return; }
+    all.forEach(n=>{
+      const sub=[n.note, inReader?"":n.title, n.page?`صفحة ${n.page}`:"", new Date(n.date).toLocaleDateString("ar")].filter(Boolean).join(" · ");
+      box.appendChild(sheetRow(n.quote||"(بلا اقتباس)", sub,
+        async()=>{ $("sheet").classList.add("hidden");
+          if(!$("reader").classList.contains("hidden") && n.book===S.id){ n.kind==="scan" ? jumpToPage(n.page) : jumpToToken(n.pos); }
+          else { S.jump=n; await openSaved(n.book); } },
+        async e=>{ e.stopPropagation(); await DB.del("notes",n.id).catch(()=>{}); all=all.filter(x=>x!==n); render(box); }));
+    });
+  };
+  openSheet(inReader?"علامات هذا الكتاب":"علاماتي وملاحظاتي", render);
+}
+$("notesBtn").onclick=()=>openNotes(false);
+$("markBtn").onclick=addMark;
+$("tocBtn").onclick=openToc;
+$("searchBtn").onclick=openSearch;
+$("notesBtn2").onclick=()=>openNotes(true);
+
+/* ───── النسخ الاحتياطي والإحماء ───── */
+function openBackup(){
+  openSheet("نسخة احتياطية", box=>{
+    box.innerHTML=`<p class="hint">يحفظ الملف كتبك النصية ومواضع توقفك وعلاماتك وإحصائياتك وإعداداتك. ملفات الكتب المصوّرة كبيرة، لذلك تُضاف فقط إن اخترت ذلك.</p>
+      <label class="chk"><input type="checkbox" id="bkFiles"> إضافة ملفات الكتب المصوّرة (حجم كبير)</label>`;
+    const out=document.createElement("button"); out.className="big"; out.textContent="حفظ نسخة احتياطية";
+    const prog=document.createElement("p"); prog.className="hint";
+    out.onclick=async()=>{
+      prog.textContent="جارٍ التجهيز…";
+      try{
+        const data={v:1, date:Date.now(), prefs,
+          meta:await DB.all("meta"), texts:await DB.all("texts"),
+          sessions:await DB.all("sessions").catch(()=>[]), notes:await DB.all("notes").catch(()=>[]), files:[]};
+        if($("bkFiles").checked){
+          const fs=await DB.all("files").catch(()=>[]);
+          for(const f of fs){
+            prog.textContent=`جارٍ تحويل ملفات الكتب… (${data.files.length+1} من ${fs.length})`;
+            data.files.push({id:f.id, b64:await blobToB64(f.blob)});
+          }
+        }
+        const blob=new Blob([JSON.stringify(data)],{type:"application/json"});
+        const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+        a.download=`نسخة-القارئ-${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+        prog.textContent=`تم الحفظ: ${data.meta.length} كتابًا، ${(data.notes||[]).length} علامة، ${(data.sessions||[]).length} جلسة.`;
+      }catch(e){ prog.textContent="تعذّر إنشاء النسخة."; }
+    };
+    const lbl=document.createElement("label"); lbl.className="file"; lbl.style.marginTop="14px";
+    lbl.innerHTML='<span>استعادة من ملف نسخة احتياطية</span>';
+    const inp=document.createElement("input"); inp.type="file"; inp.accept=".json,application/json"; inp.className="vh";
+    lbl.appendChild(inp);
+    inp.onchange=async e=>{
+      const f=e.target.files[0]; if(!f) return;
+      prog.textContent="جارٍ الاستعادة…";
+      try{
+        const d=JSON.parse(await f.text());
+        for(const m of d.meta||[]) await DB.put("meta",m);
+        for(const t of d.texts||[]) await DB.put("texts",t);
+        for(const n of d.notes||[]) await DB.put("notes",n).catch(()=>{});
+        for(const s2 of d.sessions||[]) await DB.put("sessions",s2).catch(()=>{});
+        for(const fl of d.files||[]) await DB.put("files",{id:fl.id, blob:b64ToBlob(fl.b64)}).catch(()=>{});
+        if(d.prefs){ Object.assign(prefs,d.prefs); savePrefs(); }
+        prog.textContent=`تمت الاستعادة: ${(d.meta||[]).length} كتابًا. حدّث الصفحة لتظهر الإعدادات المستعادة.`;
+        renderShelf();
+      }catch(err){ prog.textContent="الملف غير صالح."; }
+    };
+    box.append(out, prog, lbl);
+  });
+}
+const blobToB64=b=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(",")[1]); r.onerror=rej; r.readAsDataURL(b); });
+function b64ToBlob(b64){
+  const bin=atob(b64), a=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) a[i]=bin.charCodeAt(i);
+  return new Blob([a],{type:"application/pdf"});
+}
+$("backupBtn").onclick=openBackup;
+
+/* إحماء قبل الجلسة: توسيع مدى الرؤية */
+function runWarmup(done){
+  const box=$("warm"), w=$("warmWord");
+  box.classList.remove("hidden");
+  const src = S.kind==="scan" || !S.tokens.length
+    ? Array.from({length:400},()=>String(Math.floor(Math.random()*900)+100))
+    : S.tokens.slice(Math.max(0,S.pos-400), S.pos+400).filter(x=>x!=="\n");
+  let i=Math.max(0, src.length-300), t=0, timer=null;
+  const total=45000, t0=performance.now();
+  const step=()=>{
+    t=performance.now()-t0;
+    if(t>=total || i>=src.length) return finish();
+    const size = t<15000 ? 1 : t<30000 ? 2 : 3;
+    w.textContent=src.slice(i,i+size).join(" "); i+=size;
+    $("warmBar").style.width=(t/total*100)+"%";
+    $("warmHint").textContent = size===1 ? "ثبّت نظرك في المنتصف ولا تحرّك عينك" : `التقط ${size===2?"كلمتين":"ثلاث كلمات"} في نظرة واحدة`;
+    timer=setTimeout(step, size*60000/(S.wpm*1.2));
+  };
+  const finish=()=>{ clearTimeout(timer); box.classList.add("hidden"); done(); };
+  $("warmSkip").onclick=finish;
+  step();
+}
+
 function startReading(){
   keepAwake();
+  setTimeout(startSession,0);
+  if(prefs.warm) setTimeout(()=>runWarmup(()=>{ keepAwake(); }),300);
   $("lib").classList.add("hidden"); $("reader").classList.remove("hidden");
   $("rTitle").textContent = S.title;
   $("card").classList.add("hidden");
+  if(S.jump){
+    const j=S.jump; S.jump=null;
+    if(j.kind==="scan"){ if(j.page) SC.page=Math.max(1,Math.min(SC.pages,j.page)); SC.resumeUnit=0; }
+    else S.pos=Math.max(0,Math.min(S.tokens.length-1, j.pos||0));
+  }
   const scan=S.kind==="scan";
   $("scan").classList.toggle("hidden", !scan);
   document.querySelector('#modes [data-m="rsvp"]').classList.toggle("hidden", scan);
@@ -819,7 +1648,7 @@ function startReading(){
     if(s){ s.classList.add("mark"); S.hl=[s]; }
   }
 }
-$("back").onclick = async () => { if(inFs()) (document.exitFullscreen||document.webkitExitFullscreen).call(document).catch(()=>{}); letSleep(); pause(); await saveProgress(true); renderShelf(); $("reader").classList.add("hidden"); $("lib").classList.remove("hidden"); };
+$("back").onclick = async () => { if(inFs()) (document.exitFullscreen||document.webkitExitFullscreen).call(document).catch(()=>{}); letSleep(); pause(); recordFree(); await saveProgress(true); await endSession(); renderShelf(); $("reader").classList.add("hidden"); $("lib").classList.remove("hidden"); };
 
 function renderPage(start){
   const T=S.tokens, box=$("page"), tx=$("text");
@@ -844,7 +1673,7 @@ function renderPage(start){
     }
   }
   S.pageEnd=i;
-  S.pageShownAt=performance.now();
+  S.pageShownAt=performance.now(); S.pass=1;
   S.spans.forEach(s=>{ if(+s.dataset.i < S.pos) s.classList.add("read"); });
   buildUnits();
   updateInfo();
@@ -879,14 +1708,21 @@ function tick(){
   let extra=0;
   if(S.unit>=S.units.length){
     if(S.pageEnd>=S.tokens.length) return finished();
+    if(burstOn() && S.pass!==2){ S.pass=2; S.unit=0; S.pos=S.pageStart; $("passTag").textContent="قراءة متأنية";
+      S.spans.forEach(x=>x.classList.remove("read")); S.timer=setTimeout(tick,400); return; }
     S.stack.push(S.pageStart); S.pos=S.pageEnd; renderPage(S.pageEnd); S.unit=0; extra=250;
+    S.pass=1; $("passTag").textContent=burstOn()?"مرور سريع":"";
+    if(pageTurned()) return;
   }
   const u=S.units[S.unit++];
   highlight(u);
+  const fast=burstOn() && S.pass!==2;
+  if(!fast) addWords(u.length);
   S.pos=+u[0].dataset.i;
-  let ms=u.length*60000/S.wpm;
+  let ms=u.length*60000/(S.wpm*(fast?1.8:1));
   const last=u[u.length-1].textContent;
   if(/[.!؟?:]$/.test(last)) ms*=1.35;
+  if(ttsOn() && !fast && speak(u.map(x=>x.textContent).join(" "), ms, ()=>{ if(S.playing) tick(); })){ updateInfo(); return; }
   S.timer=setTimeout(tick, ms+extra);
   updateInfo();
 }
@@ -899,16 +1735,39 @@ function rsvpTick(){
   while(w.length<S.chunk && i<T.length && T[i]!=="\n"){ w.push(T[i]); i++; if(/[.!؟?:،,]$/.test(w[w.length-1])) break; }
   $("flashWord").textContent=w.join(" ");
   S.pos=i;
+  addWords(w.length);
+  if(rsvpWordsCheck()) return;
   let ms=w.length*60000/S.wpm;
   if(/[.!؟?:]$/.test(w[w.length-1])) ms*=1.6; else if(/[،,]$/.test(w[w.length-1])) ms*=1.25;
   if(T[i]==="\n") ms*=1.4;
+  if(ttsOn() && speak(w.join(" "), ms, ()=>{ if(S.playing) tick(); })){ updateInfo(); return; }
   S.timer=setTimeout(tick, ms);
   updateInfo();
 }
 
-function play(){ if(S.mode==="free") return; S.playing=true; $("play").textContent="إيقاف"; tick(); }
-function pause(){ if(S.playing) saveProgress(true); S.playing=false; clearTimeout(S.timer); $("play").textContent="تشغيل"; }
-function finished(){ pause(); highlight(null); $("iLeft").textContent="انتهى الكتاب"; $("flashWord").textContent="انتهى الكتاب"; }
+const ttsOn=()=>!!prefs.tts && S.kind!=="scan" && "speechSynthesis" in window;
+let ttsFail=0;
+function speak(text, ms, done){
+  if(ttsFail>=3) return false;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="ar-SA"; u.rate=Math.max(.5,Math.min(3, S.wpm/170));
+    const vs=speechSynthesis.getVoices();
+    const v=vs.find(v=>/^ar/i.test(v.lang));
+    if(v) u.voice=v;
+    let fired=false;
+    const go=ok=>{ if(fired) return; fired=true; clearTimeout(t); if(!ok) ttsFail++; else ttsFail=0; done(); };
+    // مؤقت احتياطي إن لم يعمل النطق (بعض الأجهزة بلا صوت عربي)
+    const t=setTimeout(()=>go(false), Math.max(1500, ms*3));
+    u.onend=()=>go(true); u.onerror=()=>go(false);
+    speechSynthesis.speak(u);
+    return true;
+  }catch(e){ ttsFail++; return false; }
+}
+function play(){ if(S.mode==="free") return; if(!S.playing) markPlay(); S.playing=true; $("play").textContent="إيقاف"; tick(); }
+function pause(){ if(S.playing){ saveProgress(true); markStop(); } if("speechSynthesis" in window) speechSynthesis.cancel(); S.playing=false; clearTimeout(S.timer); $("play").textContent="تشغيل"; }
+function finished(){ pause(); highlight(null); $("iLeft").textContent="انتهى الكتاب"; $("flashWord").textContent="انتهى الكتاب"; setTimeout(()=>nextVolume(),400); }
 $("play").onclick = () => S.playing ? pause() : play();
 
 function setMode(m, first){
@@ -916,7 +1775,7 @@ function setMode(m, first){
     if(m==="rsvp") m="cols";
     const was=S.playing; pause();
     const line=scanLine();
-    S.mode=m; prefs.mode=m; savePrefs();
+    S.mode=m; prefs.mode=m; savePrefs(); saveBookPrefs();
     document.querySelectorAll("#modes button").forEach(b=>b.classList.toggle("on", b.dataset.m===m));
     $("play").classList.toggle("hidden", m==="free");
     pickScanUnits();
@@ -931,7 +1790,7 @@ function setMode(m, first){
   $("scan").classList.add("hidden");
   document.querySelector('#modes [data-m="rsvp"]').classList.remove("hidden");
   const was=S.playing; pause();
-  S.mode=m; prefs.mode=m; savePrefs();
+  S.mode=m; prefs.mode=m; savePrefs(); saveBookPrefs();
   document.querySelectorAll("#modes button").forEach(b=>b.classList.toggle("on", b.dataset.m===m));
   const flash = m==="rsvp";
   $("page").classList.toggle("hidden", flash);
@@ -961,13 +1820,16 @@ function scanGo(d){
   if(d>0 && S.mode==="free" && SC.a){ const min=(performance.now()-SC.shownAt)/60000; if(min>0.05 && SC.a.lines) realWpm=Math.round(SC.a.lines*SC.wpl/min); }
   const np=Math.max(1,Math.min(SC.pages, SC.page+d));
   if(np===SC.page){ if(was) play(); return; }
-  SC.page=np; scanRender(np,0).then(()=>{ if(was) play(); });
+  if(d>0) recordFree();
+  SC.page=np; scanRender(np,0).then(()=>{ if(d>0 && pageTurned()) return; if(was) play(); });
 }
 function nextPage(){
   if(S.kind==="scan") return scanGo(1);
-  const was=S.playing; pause(); recordReal();
+  const was=S.playing; pause(); recordReal(); recordFree();
+  let turned=false;
   if(S.mode==="rsvp"){ S.pos=Math.min(S.tokens.length-1, S.pos+150); rsvpPreview(); }
-  else if(S.pageEnd<S.tokens.length){ S.stack.push(S.pageStart); S.pos=S.pageEnd; renderPage(S.pageEnd); }
+  else if(S.pageEnd<S.tokens.length){ S.stack.push(S.pageStart); S.pos=S.pageEnd; renderPage(S.pageEnd); turned=true; }
+  if(turned && pageTurned()) return;
   if(was) play();
 }
 function prevPage(){
@@ -986,6 +1848,11 @@ $("next").onclick=nextPage; $("prev").onclick=prevPage;
 
 // السرعة الفعلية في القراءة الحرة
 let realWpm=null;
+function recordFree(){
+  if(S.mode!=="free" || !$("quiz").classList.contains("hidden")) return;
+  if(S.kind==="scan"){ if(SC.a) addWords(SC.a.lines*SC.wpl, performance.now()-SC.shownAt); SC.shownAt=performance.now(); }
+  else { addWords(S.spans.filter(x=>+x.dataset.i>=S.pos).length, performance.now()-S.pageShownAt); S.pageShownAt=performance.now(); }
+}
 function recordReal(){
   if(S.mode!=="free") return;
   const min=(performance.now()-S.pageShownAt)/60000, words=S.spans.length;
@@ -1025,7 +1892,7 @@ function updateInfo(){
     const leftWords=(SC.pages-SC.page)*avg + (SC.units.length ? (SC.units.length-SC.unit)/SC.units.length*(SC.a?SC.a.lines*SC.wpl:avg) : 0);
     $("iPct").textContent=`صفحة ${SC.page} من ${SC.pages}`;
     $("iLeft").textContent="متبقٍ نحو "+fmtTime(Math.max(0,Math.round(leftWords/S.wpm)));
-    $("iReal").textContent = S.mode==="free" && realWpm ? `سرعتك ${realWpm} كلمة/د` : (SC.a ? `${SC.a.count||0} سطرًا` : "");
+    $("iReal").textContent = S.mode==="free" && realWpm ? `سرعتك ${realWpm} كلمة/د` : (SC.a ? (SC.info||"")+`${SC.a.count||0} سطرًا` : "");
     $("seek").value=Math.round((SC.page-1)/Math.max(1,SC.pages-1)*1000);
     $("wpmV").textContent=S.wpm; $("wpmR").value=S.wpm; $("wpmR2").textContent=S.wpm;
     $("spd").style.visibility = S.mode==="free" ? "hidden" : "visible";
@@ -1057,7 +1924,17 @@ $("goBtn").onclick = () => {
   if(S.kind==="scan"){ const n=Math.max(1,Math.min(SC.pages,Math.round(+$("goPct").value||1))); jumpTo((n-1)/Math.max(1,SC.pages-1)); }
   else jumpTo((+$("goPct").value||0)/100); $("panel").classList.add("hidden"); };
 
-function setWpm(v){ S.wpm=Math.max(100,Math.min(1200,v)); prefs.wpm=S.wpm; savePrefs(); updateInfo(); }
+function setWpm(v){ S.wpm=Math.max(100,Math.min(1200,v)); prefs.wpm=S.wpm; savePrefs(); saveBookPrefs(); updateInfo(); }
+function saveBookPrefs(){ if(S.id) DB.patch(S.id,{pref:{wpm:S.wpm, mode:S.mode, chunk:S.chunk, wpl:SC.wpl, fs:+$("fsR").value}}).catch(()=>{}); }
+function applyBookPrefs(m){
+  S.cur=m;
+  const b=m && m.pref; if(!b) return;
+  if(b.wpm) S.wpm=b.wpm;
+  if(b.mode) S.mode=b.mode;
+  if(b.chunk){ S.chunk=b.chunk; document.querySelectorAll("#chunkRow button").forEach(x=>x.classList.toggle("on", +x.textContent===b.chunk)); }
+  if(b.wpl){ SC.wpl=b.wpl; $("wplV").textContent=b.wpl; }
+  if(b.fs){ $("fsR").value=b.fs; root.setProperty("--fs", b.fs+"px"); scanZoom(); }
+}
 $("slow").onclick=()=>setWpm(S.wpm-20);
 $("fast").onclick=()=>setWpm(S.wpm+20);
 $("wpmR").oninput=e=>setWpm(+e.target.value);
@@ -1065,7 +1942,7 @@ $("wpmR").oninput=e=>setWpm(+e.target.value);
 /* الإعدادات */
 $("wplMinus").onclick=()=>setWpl(SC.wpl-1);
 $("wplPlus").onclick=()=>setWpl(SC.wpl+1);
-function setWpl(v){ SC.wpl=Math.max(3,Math.min(30,v)); $("wplV").textContent=SC.wpl; if(S.id) DB.patch(S.id,{wpl:SC.wpl}).catch(()=>{}); updateInfo(); }
+function setWpl(v){ SC.wpl=Math.max(3,Math.min(30,v)); $("wplV").textContent=SC.wpl; if(S.id) DB.patch(S.id,{wpl:SC.wpl}).catch(()=>{}); saveBookPrefs(); updateInfo(); }
 $("gear").onclick=()=>{ pause();
   const scan=S.kind==="scan";
   $("wplRow").classList.toggle("hidden",!scan); $("wplHint").classList.toggle("hidden",!scan);
@@ -1086,7 +1963,7 @@ if(prefs.mode) S.mode=prefs.mode;
 function scanZoom(){ $("scanWrap").style.width=Math.round((+$("fsR").value)/22*100)+"%"; }
 scanZoom();
 function relayout(){ scanZoom(); if(S.kind==="scan") return; if(S.mode!=="rsvp" && !$("reader").classList.contains("hidden")) renderPage(S.pageStart); }
-$("fsR").oninput=e=>{ prefs.fs=+e.target.value; savePrefs(); root.setProperty("--fs", e.target.value+"px"); relayout(); };
+$("fsR").oninput=e=>{ prefs.fs=+e.target.value; savePrefs(); saveBookPrefs(); root.setProperty("--fs", e.target.value+"px"); relayout(); };
 $("lhR").oninput=e=>{ prefs.lh=+e.target.value; savePrefs(); root.setProperty("--lh", e.target.value); relayout(); };
 [1,2,3,4].forEach(n=>{ const b=document.createElement("button"); b.textContent=n;
   b.classList.toggle("on", n===S.chunk);
@@ -1095,10 +1972,33 @@ function group(id,b){ document.querySelectorAll("#"+id+" button").forEach(x=>x.c
 document.querySelectorAll("#guideRow button").forEach(b=>b.onclick=()=>{
   group("guideRow",b); prefs.guides=b.dataset.g; savePrefs(); document.documentElement.classList.toggle("noguides", b.dataset.g==="0"); });
 document.querySelectorAll("#themeRow button").forEach(b=>b.onclick=()=>{
-  group("themeRow",b); prefs.theme=b.dataset.t; savePrefs(); document.body.className=b.dataset.t; });
+  group("themeRow",b); prefs.theme=b.dataset.t; savePrefs();
+  document.body.classList.remove("sepia","dark"); if(b.dataset.t) document.body.classList.add(b.dataset.t);
+  const c=$("scanWrap").querySelector("canvas"); if(c) c.style.filter=scanFx(); });
 // تطبيق التفضيلات المحفوظة
-document.querySelectorAll("#themeRow button").forEach(b=>{ if(b.dataset.t===(prefs.theme||"")){ group("themeRow",b); document.body.className=b.dataset.t; } });
+document.querySelectorAll("#themeRow button").forEach(b=>{ if(b.dataset.t===(prefs.theme||"")){ group("themeRow",b); if(b.dataset.t) document.body.classList.add(b.dataset.t); } });
 document.querySelectorAll("#guideRow button").forEach(b=>{ if(b.dataset.g===(prefs.guides||"1")){ group("guideRow",b); document.documentElement.classList.toggle("noguides", b.dataset.g==="0"); } });
+[["autoRow","a","auto",1],["burstRow","b","burst",0],["ttsRow","t2","tts",0],["warmRow","w","warm",0]].forEach(([id,attr,key,def])=>{
+  document.querySelectorAll("#"+id+" button").forEach(b=>{
+    const cur = prefs[key]===undefined ? def : prefs[key];
+    if(+b.dataset[attr]===cur) b.classList.add("on");
+    b.onclick=()=>{ prefs[key]=+b.dataset[attr]; savePrefs(); group(id,b);
+      if(key==="tts"){ if(prefs.tts && S.mode==="cols") setMode("line"); if(!prefs.tts && "speechSynthesis" in window) speechSynthesis.cancel(); }
+      if(key==="burst"){ S.pass=1; SC.pass=1; $("passTag").textContent=""; } };
+  });
+});
+document.querySelectorAll("#quizRow button").forEach(b=>{
+  if(+b.dataset.q===quizEvery()) b.classList.add("on");
+  b.onclick=()=>{ prefs.quiz=+b.dataset.q; savePrefs(); group("quizRow",b); ST.pagesSince=0; ST.wordsSince=0; };
+});
+document.querySelectorAll("#scanSets button").forEach(b=>{
+  const k=b.dataset.s1;
+  const on=()=>prefs[k]!==0;
+  b.classList.toggle("on", on());
+  b.onclick=()=>{ prefs[k]= on() ? 0 : 1; savePrefs(); b.classList.toggle("on", on());
+    if(S.kind==="scan"){ SC.cache.clear(); if(k==="sharp"){ const c=$("scanWrap").querySelector("canvas"); if(c) c.style.filter=scanFx(); }
+      else scanRender(SC.page, Math.max(0,SC.unit-1)); } };
+});
 renderShelf();
 if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
 
